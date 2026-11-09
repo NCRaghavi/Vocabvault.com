@@ -1,0 +1,84 @@
+{
+  "examId": "gmat",
+  "examTitle": "GMAT Focus Verbal Reasoning Challenge",
+  "subtitle": "Computer-Based Testing simulation for GMAT Critical Reasoning and Reading Comprehension vocabulary.",
+  "timePerQuestionSeconds": 45,
+  "passingScorePercentage": 70,
+  "instructions": [
+    "GMAT Focus Format: 45 seconds per question.",
+    "Critical Reasoning Focus: Analyze lexical precision, premise assumptions, and argument validity.",
+    "Select the single best answer that completes the argument or clarifies the logical flaw."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "type": "Critical Reasoning - Assumption",
+      "prompt": "The venture capital board dismissed the founder's valuation model as ________, pointing out that it relied on an unproven hypothesis that user acquisition costs would decline to zero within six months.",
+      "options": [
+        "pragmatic",
+        "fallacious",
+        "lucid",
+        "ubiquitous",
+        "esoteric"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Fallacious' means based on a mistaken belief or unsound reasoning. Since the model relied on an unproven and implausible hypothesis, describing it as 'fallacious' correctly captures the logical vulnerability in the argument."
+    },
+    {
+      "id": 2,
+      "type": "Critical Reasoning - Inference",
+      "prompt": "The legal counsel argued that the supplier had given ________ approval to the contract modifications, as they had accepted payments under the new tariff schedule without objection for three consecutive quarters.",
+      "options": [
+        "tacit",
+        "ephemeral",
+        "quixotic",
+        "anachronistic",
+        "esoteric"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Tacit' means understood or implied without being stated directly. Accepting modified terms and payments over three quarters without protest represents implied or tacit agreement."
+    },
+    {
+      "id": 3,
+      "type": "Reading Comprehension - Tone",
+      "prompt": "Rather than relying on abstract corporate dogma, the interim chief executive adopted a resolutely ________ approach, restructuring division budgets based solely on verifiable operating margins.",
+      "options": [
+        "anachronistic",
+        "pragmatic",
+        "quixotic",
+        "dogmatic",
+        "transitory"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Pragmatic' means dealing with situations realistically and practically based on real-world outcomes rather than theoretical dogma, which directly matches basing decisions on 'verifiable operating margins'."
+    },
+    {
+      "id": 4,
+      "type": "Critical Reasoning - Strengthen/Weaken",
+      "prompt": "To ________ their claim that regional consumer confidence had rebounded, market analysts presented third-quarter retail data demonstrating an 18% increase in discretionary household spending.",
+      "options": [
+        "substantiate",
+        "obfuscate",
+        "repudiate",
+        "undermine",
+        "attenuate"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Substantiate' means to provide evidence to support or prove the truth of a claim. Discretionary spending data was used to substantiate (support) the analysts' thesis."
+    },
+    {
+      "id": 5,
+      "type": "Critical Reasoning - Flaw in Argument",
+      "prompt": "The auditor noted that the executive's statements were deliberately ________, using evasive language that could be interpreted either as a denial of wrongdoing or as an admission of regulatory negligence.",
+      "options": [
+        "lucid",
+        "pellucid",
+        "equivocal",
+        "pragmatic",
+        "ubiquitous"
+      ],
+      "correctIndex": 2,
+      "explanation": "'Equivocal' means open to more than one interpretation or deliberately ambiguous, matching the auditor's observation of language that could be read in two contradictory ways."
+    }
+  ]
+}

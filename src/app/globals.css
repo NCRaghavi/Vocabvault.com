@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased font-sans min-h-screen flex flex-col selection:bg-blue-100 selection:text-blue-900;
+  }
+}
+
+/* Ad Slot Layout Holders with Zero Cumulative Layout Shift (CLS) */
+.ad-slot {
+  @apply relative my-6 w-full flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-100/70 text-slate-400 text-xs font-mono tracking-wider transition-colors hover:border-slate-400 hover:bg-slate-100/90;
+}
+
+.ad-slot::before {
+  content: "SPONSORED ADVERTISEMENT PLACEMENT";
+  @apply absolute top-2 right-3 text-[10px] uppercase font-bold tracking-widest text-slate-400;
+}
+
+.ad-leaderboard {
+  min-height: 90px;
+}
+
+.ad-sidebar {
+  min-height: 250px;
+}
+
+.ad-in-article {
+  min-height: 120px;
+}
+
+.ad-footer {
+  min-height: 100px;
+}
+
+/* Smooth Academic Typography */
+.prose-academic p {
+  @apply text-slate-700 leading-relaxed text-base md:text-lg mb-4;
+}
+
+/* Quiz Pulse Animation for Active Timer */
+@keyframes timer-warning {
+  0%, 100% { color: #dc2626; }
+  50% { color: #f97316; }
+}
+
+.timer-urgent {
+  animation: timer-warning 1s infinite ease-in-out;
+}

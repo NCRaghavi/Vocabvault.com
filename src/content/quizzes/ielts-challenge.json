@@ -1,0 +1,38 @@
+{
+  "examId": "ielts",
+  "examTitle": "IELTS Academic Verbal Mastery Challenge",
+  "subtitle": "Band 8.0-9.0 Academic Reading & Lexical Resource Assessment for International University Candidates.",
+  "timePerQuestionSeconds": 40,
+  "passingScorePercentage": 75,
+  "instructions": [
+    "CBT Academic Reading Style: 40 seconds per question.",
+    "Lexical Resource: Focuses on precision, collocations, and register.",
+    "Select the most appropriate academic word."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "type": "Academic Collocation",
+      "prompt": "In academic environmental reports, plastic debris is described as ________ in marine ecosystems, meaning it can be detected across all oceanic strata.",
+      "options": ["anachronistic", "ubiquitous", "ephemeral", "quixotic"],
+      "correctIndex": 1,
+      "explanation": "'Ubiquitous' indicates presence everywhere simultaneously, standard in high-band IELTS environmental essays."
+    },
+    {
+      "id": 2,
+      "type": "Lexical Precision",
+      "prompt": "The research supervisor insisted that all dissertation conclusions be presented in a ________ manner to prevent ambiguity among international peer reviewers.",
+      "options": ["lucid", "esoteric", "convoluted", "transitory"],
+      "correctIndex": 0,
+      "explanation": "'Lucid' means clear, rational, and easily understood, avoiding ambiguity."
+    },
+    {
+      "id": 3,
+      "type": "Academic Register",
+      "prompt": "Policymakers decided on a ________ infrastructure plan, prioritizing immediate public transit fixes over speculative multi-decade megaprojects.",
+      "options": ["pragmatic", "utopian", "anachronistic", "dogmatic"],
+      "correctIndex": 0,
+      "explanation": "'Pragmatic' implies realistic, practical problem solving based on current conditions."
+    }
+  ]
+}

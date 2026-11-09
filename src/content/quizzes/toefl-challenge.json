@@ -1,0 +1,79 @@
+{
+  "examId": "toefl",
+  "examTitle": "TOEFL iBT Academic Verbal Challenge",
+  "subtitle": "Computer-Based Assessment of Academic Reading Vocabulary in Context and Lexical Inferences.",
+  "timePerQuestionSeconds": 35,
+  "passingScorePercentage": 75,
+  "instructions": [
+    "TOEFL iBT Academic Reading Format: 35 seconds per item.",
+    "Lexical In Context: Determine the exact meaning of academic vocabulary as used in university-level texts.",
+    "Scoring benchmark: Target 26-30 on the TOEFL Reading section."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "type": "Vocabulary in Context",
+      "prompt": "In the paleontology passage, the author asserts that the existence of single-celled cyanobacteria was ________ in primordial oceans, appearing in rock strata dating back 3.5 billion years across all major continents.",
+      "options": [
+        "ephemeral",
+        "ubiquitous",
+        "anachronistic",
+        "esoteric"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Ubiquitous' means present everywhere simultaneously. The author explains that cyanobacteria were found in rock strata across 'all major continents', confirming their widespread presence."
+    },
+    {
+      "id": 2,
+      "type": "Vocabulary in Context",
+      "prompt": "The word 'ephemeral' in the biology passage refers to desert wildflowers that bloom exclusively after seasonal rains and wither within forty-eight hours. The word is closest in meaning to:",
+      "options": [
+        "short-lived",
+        "enduring",
+        "poisonous",
+        "widespread"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Ephemeral' means lasting for a very short time; fleeting or transitory. Desert flowers withering within forty-eight hours are quintessential examples of short-lived phenomena."
+    },
+    {
+      "id": 3,
+      "type": "Textual Inference",
+      "prompt": "According to the geology text, the professor delivered a remarkably ________ exposition of plate tectonics, allowing exchange students with varied English proficiency to comprehend the subduction process without difficulty.",
+      "options": [
+        "lucid",
+        "convoluted",
+        "obscure",
+        "anachronistic"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Lucid' means clearly expressed, easy to understand, and completely transparent, which explains why international students grasped the concept without difficulty."
+    },
+    {
+      "id": 4,
+      "type": "Vocabulary in Context",
+      "prompt": "Economic historians described the post-war agrarian reform as a ________ compromise, choosing policies that could be immediately implemented with existing farm equipment rather than waiting for industrialized tractors.",
+      "options": [
+        "quixotic",
+        "pragmatic",
+        "esoteric",
+        "theoretical"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Pragmatic' means practical and realistic, focused on immediate utility and tangible tools rather than abstract or perfectionist ideals."
+    },
+    {
+      "id": 5,
+      "type": "Reference & Nuance",
+      "prompt": "The anthropologist noted that ancient tribal rites once considered strictly ________ and shielded from outsiders have now been recorded and made available to global linguistics archives.",
+      "options": [
+        "esoteric",
+        "accessible",
+        "mundane",
+        "ubiquitous"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Esoteric' refers to knowledge intended for or understood only by an enlightened inner circle of initiates, directly matching rituals previously shielded from outsiders."
+    }
+  ]
+}

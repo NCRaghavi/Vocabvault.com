@@ -1,0 +1,84 @@
+{
+  "examId": "gre",
+  "examTitle": "GRE Weekly Master CBT Challenge",
+  "subtitle": "Computer-Based Testing simulation focusing on Advanced Text Completion and Sentence Equivalence.",
+  "timePerQuestionSeconds": 45,
+  "passingScorePercentage": 70,
+  "instructions": [
+    "Timed CBT Environment: You have 45 seconds per question.",
+    "Immediate scoring and algorithmic breakdown provided upon submission.",
+    "Select the single best lexical completion for each item."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "type": "Text Completion",
+      "prompt": "Although the preliminary geological findings were hailed as groundbreaking, subsequent longitudinal surveys proved that the initial seismic anomalies were merely ________, dissipating before any permanent faultline could be verified.",
+      "options": [
+        "anachronistic",
+        "ephemeral",
+        "ubiquitous",
+        "lucid",
+        "dogmatic"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Ephemeral' (lasting for a brief time / transitory) perfectly matches the context of seismic anomalies that 'dissipated before any permanent faultline could be verified.' The contrast word 'Although' contrasts the hailed 'groundbreaking' status with their fleeting reality."
+    },
+    {
+      "id": 2,
+      "type": "Sentence Equivalence",
+      "prompt": "The dean praised the visiting physicist for her ability to render extraordinarily complex quantum electrodynamics into ________ lectures that captivated both undergraduate freshmen and senior faculty alike.",
+      "options": [
+        "abstruse",
+        "convoluted",
+        "pellucid",
+        "lucid",
+        "esoteric"
+      ],
+      "correctIndex": 3,
+      "explanation": "Both 'lucid' and 'pellucid' denote extreme clarity, coherence, and ease of understanding, which directly fits delivering lectures that captivated freshmen and faculty alike despite the complex subject matter."
+    },
+    {
+      "id": 3,
+      "type": "Text Completion",
+      "prompt": "Rejecting the purely theoretical musings of earlier socio-political treatises, the new commission took a resolutely ________ stance, enacting only policies supported by quantifiable municipal data.",
+      "options": [
+        "quixotic",
+        "pragmatic",
+        "visionary",
+        "dogmatic",
+        "anachronistic"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Pragmatic' (dealing with things sensibly and practically based on real-world results rather than theory) directly contrasts with 'purely theoretical musings' and aligns with 'quantifiable municipal data'."
+    },
+    {
+      "id": 4,
+      "type": "Text Completion",
+      "prompt": "Once restricted to secretive medieval guilds, the alchemical formulas that scholars once dismissed as hopelessly ________ have now been decoded and contextualized by modern historians of science.",
+      "options": [
+        "esoteric",
+        "ubiquitous",
+        "exoteric",
+        "banal",
+        "pragmatic"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Esoteric' refers to knowledge intended for or understood by only a small, specialized, initiated inner circle — in this case, 'secretive medieval guilds'."
+    },
+    {
+      "id": 5,
+      "type": "Sentence Equivalence",
+      "prompt": "While smartphone notifications have become ________ in contemporary urban life, cognitive scientists caution that this constant sensory bombardment degrades sustained academic attention spans.",
+      "options": [
+        "ubiquitous",
+        "infrequent",
+        "omnipresent",
+        "isolated",
+        "transitory"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Ubiquitous' and 'omnipresent' mean present or found everywhere simultaneously, matching the universal penetration of smartphone notifications in modern life."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "examId": "pte",
+  "examTitle": "PTE Academic Reading & Verbal Challenge",
+  "subtitle": "Computer-Based Testing simulation for Pearson Test of English Reading: Fill in the Blanks & Collocations.",
+  "timePerQuestionSeconds": 40,
+  "passingScorePercentage": 75,
+  "instructions": [
+    "PTE Academic CBT Timing: 40 seconds per question item.",
+    "Reading & Writing Fill in the Blanks: Select the word that best matches academic grammar and academic collocation conventions.",
+    "Benchmark score: 79+ (equivalent to IELTS Band 8.0)."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "type": "Reading: Fill in the Blanks",
+      "prompt": "In academic sociology, using contemporary 21st-century technological norms to judge pre-industrial agricultural communities is regarded as methodologically ________ and intellectually misleading.",
+      "options": [
+        "anachronistic",
+        "ubiquitous",
+        "lucid",
+        "pragmatic"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Anachronistic' means belonging to a period other than that in which it exists; applying modern standards to pre-industrial societies misplaces chronological context."
+    },
+    {
+      "id": 2,
+      "type": "Academic Collocation",
+      "prompt": "Environmental scientists reported that microplastic fragments have become ________ contaminants in oceanic food chains, found in plankton, deep-sea organisms, and apex predators alike.",
+      "options": [
+        "ubiquitous",
+        "isolated",
+        "ephemeral",
+        "intermittent"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Ubiquitous' is the standard academic adjective collocated with widespread contamination occurring everywhere across an ecosystem."
+    },
+    {
+      "id": 3,
+      "type": "Reading & Writing: Fill in the Blanks",
+      "prompt": "Rather than waiting for long-term theoretical consensus on climate policy, municipal planners opted for ________ urban flood defenses that offered immediate, cost-effective storm protection.",
+      "options": [
+        "utopian",
+        "pragmatic",
+        "anachronistic",
+        "dogmatic"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Pragmatic' denotes an approach guided by practical consequences and immediate feasibility rather than abstract theoretical debates."
+    },
+    {
+      "id": 4,
+      "type": "Academic Vocabulary",
+      "prompt": "The primary advantage of the new biomedical protocol was its ________ explanation of molecular gene splicing, minimizing misunderstandings between international lab researchers.",
+      "options": [
+        "lucid",
+        "convoluted",
+        "nebulous",
+        "abstruse"
+      ],
+      "correctIndex": 0,
+      "explanation": "'Lucid' means clear, rational, and easily understood, which prevents miscommunication among global teams."
+    },
+    {
+      "id": 5,
+      "type": "Reading: Fill in the Blanks",
+      "prompt": "The temporary economic boom sparked by seasonal tourism was largely ________, leaving local infrastructure under-resourced once winter travel ceased.",
+      "options": [
+        "immutable",
+        "ephemeral",
+        "perpetual",
+        "enduring"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Ephemeral' describes short-lived or transitory events, precisely matching a seasonal economic surge that dissipates in winter."
+    }
+  ]
+}
