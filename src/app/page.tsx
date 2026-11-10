@@ -57,7 +57,7 @@ export default function HomePage() {
                   <p className="text-sm text-slate-400 mt-1">{exam.line}</p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs font-semibold text-blue-400 group-hover:text-blue-300">
-                  <span>Take the {exam.name} quiz</span>
+                  <span>{exam.name} this week: words, lesson, quiz</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>

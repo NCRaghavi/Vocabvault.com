@@ -31,6 +31,8 @@ export interface WordItem {
   memoryTrick: MemoryTrick;
   examNote: string;
   quickCheck: QuickCheck | null;
+  /** Day this word was one of the homepage's 5 words (set by the autopilot), "" if never. */
+  featuredDate: string;
   content: string;
 }
 
@@ -123,6 +125,7 @@ function parseWord(fileName: string): WordItem {
       qc && Array.isArray(qc.options) && qc.options.length
         ? { prompt: str(qc.prompt), options: list(qc.options), answerIndex: Number(qc.answerIndex) || 0, explanation: str(qc.explanation) }
         : null,
+    featuredDate: data.featuredDate ? dateStr(data.featuredDate, "") : "",
     content: content.trim(),
   };
 }
@@ -167,6 +170,23 @@ export function getFeaturedWords(limit: number = 5): { date: string | null; word
     /* fall through to newest words */
   }
   return { date: null, words: getRecentWords(limit) };
+}
+
+/**
+ * This week's words for one exam: words featured in the last 7 days that are tagged for it,
+ * then other recent featured words. Before the autopilot runs, falls back to the newest words.
+ */
+export function getWeekWords(examName: string, limit: number = 10): WordItem[] {
+  const all = getAllWords();
+  const today = new Date().toISOString().slice(0, 10);
+  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const featured = all
+    .filter((w) => w.featuredDate && w.featuredDate > weekAgo && w.featuredDate <= today)
+    .sort((a, b) => (a.featuredDate < b.featuredDate ? 1 : -1));
+  const tagged = (w: WordItem) => w.examTags.some((t) => examIdFromTag(t) === examName.toLowerCase());
+  const ordered = [...featured.filter(tagged), ...featured.filter((w) => !tagged(w))];
+  if (ordered.length) return ordered.slice(0, limit);
+  return [...all.filter(tagged), ...all.filter((w) => !tagged(w))].slice(0, Math.min(limit, 6));
 }
 
 export function getWordsByLetter(letter: string): WordItem[] {
