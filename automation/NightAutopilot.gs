@@ -872,6 +872,13 @@ function gemini_(prompt, temperature) {
   for (let tries = 0; tries < CONFIG.GEMINI_MODELS.length; tries++) {
     try { return geminiCall_(model, prompt, temperature); }
     catch (err) {
+      if (/HTTP 5\d\d/.test(err.message)) {
+        // Google overloaded: try the next model for this request only (don't remember it)
+        const alt = CONFIG.GEMINI_MODELS[CONFIG.GEMINI_MODELS.indexOf(model) + 1];
+        if (!alt) throw err;
+        model = alt;
+        continue;
+      }
       if (!/MODEL_GONE/.test(err.message)) throw err;
       const next = CONFIG.GEMINI_MODELS[CONFIG.GEMINI_MODELS.indexOf(model) + 1];
       if (!next) throw new Error('No Gemini model in CONFIG.GEMINI_MODELS is available: ' + err.message);
@@ -903,7 +910,7 @@ function geminiCall_(model, prompt, temperature) {
       throw new Error('Gemini ' + code + ': ' + res.getContentText().slice(0, 200));
     }
     if (code !== 200) last = 'HTTP ' + code + ': ' + res.getContentText().slice(0, 300);
-    Utilities.sleep((code === 429 ? 20000 : 3000) * attempt); // per-minute limit: wait and retry
+    Utilities.sleep((code === 429 ? 20000 : code >= 500 ? 8000 : 3000) * attempt); // rate limit / overload: wait and retry
   }
   throw new Error('Gemini (' + model + ') gave no usable answer after 3 tries. Last: ' + last);
 }
