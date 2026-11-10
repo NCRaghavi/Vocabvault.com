@@ -10,6 +10,7 @@
  *   Every night up to 100 extra "vault" word pages (SEO background)
  *
  * SCHEDULE (IST) — all automatic after setupAutopilot()
+ *   17:00 daily       nightlyRank()        rates and re-sorts any newly added AP_Queue words (does nothing if none)
  *   19:00–23:00 daily generateRun()        5 evening runs that fill the buffer of checked words (exits at once when full).
  *                                          Only Gemini + this Sheet: it never touches GitHub or Vercel.
  *   01:00 daily       nightlyPublish()     ONE GitHub commit → Vercel redeploys
@@ -32,6 +33,8 @@ const CONFIG = {
                                  // or if you move hosting to Cloudflare Pages free (20,000-file cap per site).
   FEATURED_PER_DAY: 5,
   BATCH_SIZE: 10,                // words per Gemini call
+  SUGGEST_WHEN_QUEUE_EMPTY: false, // true = when AP_Queue runs out, Gemini picks new words itself. false = stop making
+                                   // new vault pages until you add words (lessons, quizzes and 5-a-day carry on).
   RUN_BUDGET_MS: 200000,         // stop starting new batches after ~3.3 min (Apps Script hard limit is 6 min)
   REVIEW_SHARE: 0.3,             // share of quiz words from 3–4 weeks ago
   QUIZ_DRAFT: 16, QUIZ_KEEP: 10, QUIZ_MIN: 5, // 10 go on the site, up to 6 spares become Vault Pass bonus questions
@@ -131,12 +134,13 @@ function setupAutopilot() {
   if (!props_().getProperty('UNSUB_SECRET')) props_().setProperty('UNSUB_SECRET', Utilities.getUuid());
   if (!props_().getProperty('ORDERS_SINCE')) props_().setProperty('ORDERS_SINCE', String(Math.floor(Date.now() / 1000) - 3600));
 
-  const mine = ['generateRun', 'nightlyPublish', 'buildWeeklyPacks', 'morningTelegram', 'morningReport', 'digestBatch',
+  const mine = ['nightlyRank', 'generateRun', 'nightlyPublish', 'buildWeeklyPacks', 'morningTelegram', 'morningReport', 'digestBatch',
     'memberBatch', 'generateExamPost', 'generateQuizzes', 'fulfillOrders'];
   ScriptApp.getProjectTriggers().forEach(t => { if (mine.indexOf(t.getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(t); });
   const tz = CONFIG.TIMEZONE;
   const daily = (fn, h) => ScriptApp.newTrigger(fn).timeBased().atHour(h).everyDays(1).inTimezone(tz).create();
   const weekly = (fn, day, h) => ScriptApp.newTrigger(fn).timeBased().onWeekDay(day).atHour(h).inTimezone(tz).create();
+  daily('nightlyRank', 17);
   [19, 20, 21, 22, 23].forEach(h => daily('generateRun', h)); // evening only; never commits, so no Vercel builds
   ScriptApp.newTrigger('fulfillOrders').timeBased().everyHours(1).create();
   daily('nightlyPublish', 1);
@@ -149,7 +153,7 @@ function setupAutopilot() {
   weekly('generateQuizzes', ScriptApp.WeekDay.SATURDAY, 14);
   weekly('generateQuizzes', ScriptApp.WeekDay.SATURDAY, 16);
   weekly('generateQuizzes', ScriptApp.WeekDay.SATURDAY, 18);
-  log_('setup', 'INFO', 'Autopilot installed: 16 schedules.');
+  log_('setup', 'INFO', 'Autopilot installed: 17 schedules.');
   return 'Installed.';
 }
 
@@ -174,7 +178,22 @@ function dryRunThreeWords() {
   return entries;
 }
 
-// ============================== 1. WORD GENERATION (hourly, buffered) ==============================
+// ============================== 0. RANK NEW WORDS (17:00) ==============================
+/** Rates and re-sorts words you added to AP_Queue (rankQueue lives in Seed.gs). Quiet when there's nothing new. */
+function nightlyRank() {
+  return runJob_('nightlyRank', () => {
+    if (typeof rankQueue !== 'function') return null;
+    const sh = sheet_(CONFIG.SHEETS.QUEUE);
+    const n = sh.getLastRow() - 1;
+    if (n < 1) return null;
+    const unranked = sh.getRange(2, 1, n, 2).getValues().filter(r => String(r[0]).trim() && !r[1]).length;
+    if (!unranked) return null;
+    const res = rankQueue();
+    return typeof res === 'number' ? `Ranked part of the new words; ${res} left for tomorrow.` : res;
+  }, 'doc');
+}
+
+// ============================== 1. WORD GENERATION (evening, buffered) ==============================
 function generateRun() {
   return runJob_('generateRun', () => {
     const t0 = Date.now();
@@ -187,8 +206,11 @@ function generateRun() {
     while (buffer < target && Date.now() - t0 < CONFIG.RUN_BUDGET_MS) {
       const featuredPicks = takeFromQueue_(CONFIG.SHEETS.FEATURED_QUEUE, CONFIG.BATCH_SIZE, existing);
       const picks = featuredPicks.concat(takeFromQueue_(CONFIG.SHEETS.QUEUE, CONFIG.BATCH_SIZE - featuredPicks.length, existing));
-      if (picks.length < CONFIG.BATCH_SIZE) picks.push.apply(picks, suggestWords_(CONFIG.BATCH_SIZE - picks.length, existing));
-      if (!picks.length) break;
+      if (picks.length < CONFIG.BATCH_SIZE && CONFIG.SUGGEST_WHEN_QUEUE_EMPTY) picks.push.apply(picks, suggestWords_(CONFIG.BATCH_SIZE - picks.length, existing));
+      if (!picks.length) {
+        if (!made) return `Word queue is empty: no new vault words tonight (buffer ${buffer}). Add words to ${CONFIG.SHEETS.QUEUE}.`;
+        break;
+      }
       picks.forEach(w => existing.add(w));
       const wantFeatured = {}; featuredPicks.forEach(w => wantFeatured[w] = true);
       let entries;
