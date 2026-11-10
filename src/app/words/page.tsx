@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE } from "@/config/site";
 import Link from "next/link";
 import { getAllWords } from "@/lib/content";
 import LetterBar from "@/components/LetterBar";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   title: "Vocabulary Vault: GRE, GMAT, IELTS, TOEFL, SAT & PTE Words | VerbalVaultPrep",
   description:
     "Every word with a plain definition, three examples, synonyms and a memory trick. Browse A to Z or start with the newest words.",
-  alternates: { canonical: "https://verbalvaultprep.com/words" },
+  alternates: { canonical: `${SITE.url}/words` },
 };
 
 export default function WordsIndexPage() {

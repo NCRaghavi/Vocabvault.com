@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllWords, getWordBySlug, examIdFromTag } from "@/lib/content";
-import { examById } from "@/config/site";
+import { examById, SITE } from "@/config/site";
 import Markdown, { MdInline } from "@/components/Markdown";
 import Signup from "@/components/Signup";
 import { SaveWordButton } from "@/components/MyWords";
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
   return {
     title,
     description,
-    alternates: { canonical: `https://verbalvaultprep.com/words/${word.slug}` },
+    alternates: { canonical: `${SITE.url}/words/${word.slug}` },
     keywords: [
       word.word,
       `${word.word} definition`,
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
       title,
       description,
       type: "article",
-      url: `https://verbalvaultprep.com/words/${word.slug}`,
+      url: `${SITE.url}/words/${word.slug}`,
       tags: word.examTags,
     },
     twitter: {

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllSpotlights, getSpotlight, getWordBySlug } from "@/lib/content";
-import { EXAM_CONFIG } from "@/config/site";
+import { EXAM_CONFIG, SITE } from "@/config/site";
 import Markdown from "@/components/Markdown";
 import Signup from "@/components/Signup";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -17,7 +17,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return {
     title: `${s.title} | ${s.exam} Lesson | VerbalVaultPrep`,
     description: s.description,
-    alternates: { canonical: `https://verbalvaultprep.com/spotlights/${s.slug}` },
+    alternates: { canonical: `${SITE.url}/spotlights/${s.slug}` },
     openGraph: { title: s.title, description: s.description, type: "article" },
   };
 }

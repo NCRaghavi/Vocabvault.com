@@ -3,7 +3,11 @@
  * changed in Vercel → Project → Settings → Environment Variables without touching code.
  */
 export const SITE = {
-  url: "https://verbalvaultprep.com",
+  /**
+   * The site's public address, used for canonical links and the sitemap.
+   * When verbalvaultprep.com is connected in Vercel, set NEXT_PUBLIC_SITE_URL to it (no code change needed).
+   */
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://vocabvault-com.vercel.app").replace(/\/$/, ""),
   name: "VerbalVaultPrep",
   /** Apps Script web app URL (Deploy → Web app). Signups from the quiz and signup box go here. */
   subscribeUrl: process.env.NEXT_PUBLIC_SUBSCRIBE_URL || "",

@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { SITE } from "@/config/site";
 import Link from "next/link";
 import "./globals.css";
 import { BookOpen, GraduationCap } from "lucide-react";
 import { MyWordsNavLink } from "@/components/MyWords";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://verbalvaultprep.com"),
+  metadataBase: new URL(SITE.url),
   title: "VerbalVaultPrep: Vocabulary for GRE, GMAT, IELTS, TOEFL, SAT & PTE",
   description:
     "5 words a day, a weekly lesson for your exam, and a free Sunday quiz in real exam format. Remember the words you learn, by test day.",
-  alternates: { canonical: "https://verbalvaultprep.com/" },
+  alternates: { canonical: `${SITE.url}/` },
   openGraph: {
     title: "VerbalVaultPrep: learn the words your exam tests",
     description: "5 words a day, a weekly lesson for your exam, and a free Sunday quiz in real exam format.",
