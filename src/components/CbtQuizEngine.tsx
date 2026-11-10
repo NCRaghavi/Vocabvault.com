@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { QuizData, QuizQuestion } from "@/lib/content";
 import { SITE } from "@/config/site";
-import { Clock, RotateCcw, HelpCircle, Play, Zap, Lock, Send } from "lucide-react";
+import { addMyWords, toSlug } from "@/lib/myWords";
+import { Clock, RotateCcw, HelpCircle, Play, Zap, Lock, Send, ListChecks } from "lucide-react";
 
 interface CbtQuizEngineProps {
   quizData: QuizData;
@@ -52,6 +53,7 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
   const [msg, setMsg] = useState("");
   const [sending, setSending] = useState(false);
   const picksRef = useRef<number[][]>([]);
+  const [savedCount, setSavedCount] = useState(0);
 
   useEffect(() => setUnlocked(readUnlocked()), []);
 
@@ -109,6 +111,16 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
   };
 
   const results = questions.map((q, i) => sameSet(picks[i] || [], answersOf(q)));
+
+  // When a quiz ends, put every missed word on the student's "My words" list.
+  useEffect(() => {
+    if (phase !== "done") return;
+    const missed = questions
+      .filter((q, i) => !sameSet(picksRef.current[i] || [], answersOf(q)))
+      .flatMap((q) => (q.words || []).slice(0, 1))
+      .map((w) => ({ word: w.charAt(0).toUpperCase() + w.slice(1), slug: toSlug(w), reason: "missed" as const, exam }));
+    setSavedCount(addMyWords(missed));
+  }, [phase, questions, exam]);
   const score = results.filter(Boolean).length;
   const pct = questions.length ? Math.round((score / questions.length) * 100) : 0;
 
@@ -253,6 +265,15 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
               </p>
             </div>
 
+            {savedCount > 0 && (
+              <Link href="/my-words" className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-slate-800 hover:border-amber-300">
+                <ListChecks className="w-5 h-5 text-amber-700 shrink-0" />
+                <span>
+                  Added {savedCount} missed word{savedCount === 1 ? "" : "s"} to <strong>My words</strong>, your revision list. Open it →
+                </span>
+              </Link>
+            )}
+
             {!unlocked && (
               <form onSubmit={unlock} className="rounded-2xl border border-blue-200 bg-blue-50 p-5 space-y-3">
                 <div className="flex items-center gap-2 font-bold text-slate-900">
@@ -296,6 +317,15 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
                         </span>
                         <span className={`font-bold ${ok ? "text-emerald-700" : "text-rose-700"}`}>{ok ? "✓ Correct" : "✗ Missed"}</span>
                       </div>
+                      {word && (
+                        <p className="text-xs text-slate-600">
+                          Tests:{" "}
+                          <Link href={`/words/${toSlug(word)}`} className="font-semibold text-blue-700 hover:underline">
+                            {word}
+                          </Link>
+                          {!ok && " · revise it before next Sunday"}
+                        </p>
+                      )}
                       <p className="text-sm font-medium text-slate-900 leading-snug whitespace-pre-line">{qq.prompt}</p>
                       <div className={unlocked ? "" : "blur-sm select-none pointer-events-none"} aria-hidden={!unlocked}>
                         <p className="text-xs text-slate-600">
@@ -304,14 +334,6 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
                         </p>
                         <div className="mt-2 text-xs text-slate-600 bg-white/70 p-3 rounded-xl leading-relaxed">
                           {qq.explanation}
-                          {word && (
-                            <>
-                              {" "}
-                              <Link href={`/words/${word.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} className="font-semibold text-blue-700 hover:underline">
-                                Revise “{word}” →
-                              </Link>
-                            </>
-                          )}
                         </div>
                       </div>
                     </div>

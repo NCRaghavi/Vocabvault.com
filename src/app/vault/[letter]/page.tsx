@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getWordsByLetter } from "@/lib/content";
 import LetterBar from "@/components/LetterBar";
+import WordSearch from "@/components/WordSearch";
 
 const LETTERS = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -26,7 +27,10 @@ export default function VaultLetterPage({ params }: { params: { letter: string }
     <div className="bg-slate-50 min-h-screen py-10 sm:py-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Words starting with {letter.toUpperCase()}</h1>
-        <p className="mt-2 text-slate-600">{words.length} word{words.length === 1 ? "" : "s"} in the vault.</p>
+        <p className="mt-2 text-slate-600">
+          {words.length ? `${words.length} word${words.length === 1 ? "" : "s"} in the vault.` : "No words for this letter yet. New words are added every night."}
+        </p>
+        <div className="mt-6"><WordSearch /></div>
         <LetterBar active={letter} />
         <ul className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
           {words.map((w) => (

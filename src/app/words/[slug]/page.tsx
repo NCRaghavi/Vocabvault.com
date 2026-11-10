@@ -5,6 +5,7 @@ import { getAllWords, getWordBySlug, examIdFromTag } from "@/lib/content";
 import { examById } from "@/config/site";
 import Markdown, { MdInline } from "@/components/Markdown";
 import Signup from "@/components/Signup";
+import { SaveWordButton } from "@/components/MyWords";
 import AudioPronounceButton from "@/components/AudioPronounceButton";
 import AdSlot from "@/components/AdSlot";
 import {
@@ -153,11 +154,12 @@ export default function WordPage({ params }: WordPageProps) {
                   <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight">
                     {word.word}
                   </h1>
-                  <div className="mt-2 flex items-center gap-3">
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
                     <span className="font-mono text-base text-slate-600">
                       {word.phonetic}
                     </span>
                     <AudioPronounceButton word={word.word} />
+                    <SaveWordButton word={word.word} slug={word.slug} />
                   </div>
                 </div>
 
@@ -359,7 +361,7 @@ export default function WordPage({ params }: WordPageProps) {
                 This week&apos;s words come back in Sunday&apos;s {quizExam.name} quiz, in real exam format.
               </p>
               <Link
-                href={quizExam.href}
+                href={`${quizExam.href}#quiz`}
                 className="mt-5 inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md active:scale-95"
               >
                 <span>Take the {quizExam.name} quiz</span>

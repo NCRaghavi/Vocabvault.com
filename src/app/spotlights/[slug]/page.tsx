@@ -49,7 +49,7 @@ export default function SpotlightPage({ params }: { params: { slug: string } }) 
           <Markdown source={s.content} />
         </div>
         {exam && (
-          <Link href={exam.href} className="mt-8 flex items-center justify-between rounded-2xl bg-blue-700 hover:bg-blue-800 text-white p-6">
+          <Link href={`${exam.href}#quiz`} className="mt-8 flex items-center justify-between rounded-2xl bg-blue-700 hover:bg-blue-800 text-white p-6">
             <span>
               <span className="block text-sm text-blue-200">Sunday</span>
               <span className="text-lg font-bold">Test these words in the {exam.name} quiz</span>

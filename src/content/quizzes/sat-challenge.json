@@ -20,7 +20,11 @@
         "ephemeral"
       ],
       "correctIndex": 0,
-      "explanation": "'Anachronistic' means chronologically misplaced or belonging to a different era."
+      "explanation": "'Anachronistic' means chronologically misplaced or belonging to a different era.",
+      "label": "Words in Context",
+      "words": [
+        "anachronistic"
+      ]
     },
     {
       "id": 2,
@@ -33,7 +37,11 @@
         "perennial"
       ],
       "correctIndex": 0,
-      "explanation": "'Ephemeral' denotes lasting for a very brief duration or fleeting existence."
+      "explanation": "'Ephemeral' denotes lasting for a very brief duration or fleeting existence.",
+      "label": "Words in Context",
+      "words": [
+        "ephemeral"
+      ]
     }
   ]
 }

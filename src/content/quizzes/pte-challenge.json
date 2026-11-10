@@ -20,7 +20,11 @@
         "pragmatic"
       ],
       "correctIndex": 0,
-      "explanation": "'Anachronistic' means belonging to a period other than that in which it exists; applying modern standards to pre-industrial societies misplaces chronological context."
+      "explanation": "'Anachronistic' means belonging to a period other than that in which it exists; applying modern standards to pre-industrial societies misplaces chronological context.",
+      "label": "Reading: Fill in the Blanks",
+      "words": [
+        "anachronistic"
+      ]
     },
     {
       "id": 2,
@@ -33,7 +37,11 @@
         "intermittent"
       ],
       "correctIndex": 0,
-      "explanation": "'Ubiquitous' is the standard academic adjective collocated with widespread contamination occurring everywhere across an ecosystem."
+      "explanation": "'Ubiquitous' is the standard academic adjective collocated with widespread contamination occurring everywhere across an ecosystem.",
+      "label": "Academic Collocation",
+      "words": [
+        "ubiquitous"
+      ]
     },
     {
       "id": 3,
@@ -46,7 +54,11 @@
         "dogmatic"
       ],
       "correctIndex": 1,
-      "explanation": "'Pragmatic' denotes an approach guided by practical consequences and immediate feasibility rather than abstract theoretical debates."
+      "explanation": "'Pragmatic' denotes an approach guided by practical consequences and immediate feasibility rather than abstract theoretical debates.",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "words": [
+        "pragmatic"
+      ]
     },
     {
       "id": 4,
@@ -59,7 +71,11 @@
         "abstruse"
       ],
       "correctIndex": 0,
-      "explanation": "'Lucid' means clear, rational, and easily understood, which prevents miscommunication among global teams."
+      "explanation": "'Lucid' means clear, rational, and easily understood, which prevents miscommunication among global teams.",
+      "label": "Academic Vocabulary",
+      "words": [
+        "lucid"
+      ]
     },
     {
       "id": 5,
@@ -72,7 +88,11 @@
         "enduring"
       ],
       "correctIndex": 1,
-      "explanation": "'Ephemeral' describes short-lived or transitory events, precisely matching a seasonal economic surge that dissipates in winter."
+      "explanation": "'Ephemeral' describes short-lived or transitory events, precisely matching a seasonal economic surge that dissipates in winter.",
+      "label": "Reading: Fill in the Blanks",
+      "words": [
+        "ephemeral"
+      ]
     }
   ]
 }

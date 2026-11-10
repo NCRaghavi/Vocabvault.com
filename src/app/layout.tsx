@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { BookOpen, GraduationCap } from "lucide-react";
+import { MyWordsNavLink } from "@/components/MyWords";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://verbalvaultprep.com"),
@@ -114,6 +115,7 @@ export default function RootLayout({
                   <BookOpen className="w-3.5 h-3.5 text-slate-500" />
                   Vault
                 </Link>
+                <MyWordsNavLink className="px-2.5 py-1.5 rounded-lg hover:bg-amber-50 text-amber-800 transition-colors inline-flex items-center" />
               </nav>
 
               {/* Compact Nav for Medium Screens */}
@@ -146,6 +148,7 @@ export default function RootLayout({
                 {label}
               </Link>
             ))}
+            <MyWordsNavLink className="shrink-0 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 inline-flex items-center" />
           </nav>
         </header>
 

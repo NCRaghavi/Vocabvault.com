@@ -20,7 +20,11 @@
         "quixotic"
       ],
       "correctIndex": 1,
-      "explanation": "'Ubiquitous' indicates presence everywhere simultaneously, standard in high-band IELTS environmental essays."
+      "explanation": "'Ubiquitous' indicates presence everywhere simultaneously, standard in high-band IELTS environmental essays.",
+      "label": "Academic Collocation",
+      "words": [
+        "ubiquitous"
+      ]
     },
     {
       "id": 2,
@@ -33,7 +37,11 @@
         "transitory"
       ],
       "correctIndex": 0,
-      "explanation": "'Lucid' means clear, rational, and easily understood, avoiding ambiguity."
+      "explanation": "'Lucid' means clear, rational, and easily understood, avoiding ambiguity.",
+      "label": "Lexical Precision",
+      "words": [
+        "lucid"
+      ]
     },
     {
       "id": 3,
@@ -46,7 +54,11 @@
         "dogmatic"
       ],
       "correctIndex": 0,
-      "explanation": "'Pragmatic' implies realistic, practical problem solving based on current conditions."
+      "explanation": "'Pragmatic' implies realistic, practical problem solving based on current conditions.",
+      "label": "Academic Register",
+      "words": [
+        "pragmatic"
+      ]
     }
   ]
 }

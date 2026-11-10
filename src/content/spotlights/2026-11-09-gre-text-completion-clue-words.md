@@ -5,7 +5,7 @@ exam: "GRE"
 date: "2026-11-09"
 description: "Every GRE Text Completion blank is decided by a clue in the sentence. Here's how to find it, using this week's words."
 words: ["ephemeral", "substantiate", "fallacious", "lucid", "ubiquitous"]
-quiz: "/gre-weekly-challenge"
+quiz: "/gre-weekly-challenge#quiz"
 ---
 
 ## The blank is never a guess
@@ -58,4 +58,4 @@ Clue: "a student without one is the exception". Signal: *once... today* contrast
 4. Uncover the options and pick the closest match to your word.
 5. If you missed it, write down which clue you overlooked.
 
-Test these words in Sunday's [GRE quiz](/gre-weekly-challenge).
+Test these words in Sunday's [GRE quiz](/gre-weekly-challenge#quiz).

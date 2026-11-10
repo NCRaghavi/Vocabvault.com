@@ -3,6 +3,7 @@ import { getAllWords, getFeaturedWords } from "@/lib/content";
 import { EXAM_CONFIG, SITE } from "@/config/site";
 import Signup from "@/components/Signup";
 import { MdInline } from "@/components/Markdown";
+import { MyWordsCard } from "@/components/MyWords";
 import { ArrowRight, BookOpen, Brain, CalendarCheck, ChevronRight, Clock, FileText, Layers, RotateCcw, Sparkles } from "lucide-react";
 
 export default function HomePage() {
@@ -33,10 +34,6 @@ export default function HomePage() {
               See today&apos;s 5 words
             </a>
           </div>
-          <div className="mt-8 max-w-2xl mx-auto">
-            <Signup dark />
-          </div>
-
           {/* EXAM CARDS */}
           <div id="exams" className="scroll-mt-24 mt-12 max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
             {EXAM_CONFIG.map((exam) => (
@@ -64,6 +61,10 @@ export default function HomePage() {
             ))}
           </div>
 
+          <div className="mt-10 max-w-2xl mx-auto">
+            <Signup dark />
+          </div>
+
           <div className="mt-12 pt-8 border-t border-slate-800/80 max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-slate-400 text-xs sm:text-sm">
             <div className="flex items-center justify-center gap-2"><Sparkles className="w-4 h-4 text-blue-400" /><span>5 new words daily</span></div>
             <div className="flex items-center justify-center gap-2"><Layers className="w-4 h-4 text-emerald-400" /><span>Each exam in its own format</span></div>
@@ -75,6 +76,9 @@ export default function HomePage() {
 
       {/* TODAY'S WORDS */}
       <section id="today" className="scroll-mt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-6">
+          <MyWordsCard />
+        </div>
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-blue-600 font-bold mb-1">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllWords } from "@/lib/content";
 import LetterBar from "@/components/LetterBar";
+import WordSearch from "@/components/WordSearch";
 import AdSlot from "@/components/AdSlot";
 import { BookOpen, ArrowRight, Search, Sparkles } from "lucide-react";
 
@@ -31,7 +32,8 @@ export default function WordsIndexPage() {
           <p className="mt-3 text-slate-600 text-base">
             Every word with a plain definition, three examples, synonyms and a memory trick. Browse A to Z, or start with the newest words below.
           </p>
-          <div className="flex justify-center"><LetterBar /></div>
+          <div className="mt-6"><WordSearch /></div>
+          <LetterBar />
         </div>
         <h2 className="text-lg font-bold text-slate-900 mb-4">Newest words</h2>
 

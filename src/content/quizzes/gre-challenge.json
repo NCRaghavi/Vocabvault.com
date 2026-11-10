@@ -6,7 +6,8 @@
   "passingScorePercentage": 70,
   "instructions": [
     "You have 45 seconds per question; the quiz moves on when time runs out.",
-    "Your score appears the moment you finish."
+    "Your score appears the moment you finish.",
+    "Sentence Equivalence: choose exactly two answers that give the sentence the same meaning."
   ],
   "questions": [
     {
@@ -21,7 +22,11 @@
         "dogmatic"
       ],
       "correctIndex": 1,
-      "explanation": "'Ephemeral' (lasting for a brief time / transitory) perfectly matches the context of seismic anomalies that 'dissipated before any permanent faultline could be verified.' The contrast word 'Although' contrasts the hailed 'groundbreaking' status with their fleeting reality."
+      "explanation": "'Ephemeral' (lasting for a brief time / transitory) perfectly matches the context of seismic anomalies that 'dissipated before any permanent faultline could be verified.' The contrast word 'Although' contrasts the hailed 'groundbreaking' status with their fleeting reality.",
+      "words": [
+        "ephemeral"
+      ],
+      "label": "Text Completion"
     },
     {
       "id": 2,
@@ -32,10 +37,19 @@
         "convoluted",
         "pellucid",
         "lucid",
-        "esoteric"
+        "esoteric",
+        "perfunctory"
       ],
-      "correctIndex": 3,
-      "explanation": "Both 'lucid' and 'pellucid' denote extreme clarity, coherence, and ease of understanding, which directly fits delivering lectures that captivated freshmen and faculty alike despite the complex subject matter."
+      "correctIndex": 2,
+      "explanation": "The lectures 'captivated both undergraduate freshmen and senior faculty', so despite the complex subject they must have been clear: 'lucid' and 'pellucid' both mean easy to understand. 'Abstruse' and 'esoteric' are the trap pair: they are synonyms of each other, but they mean hard to understand, the opposite of what the sentence needs.",
+      "correctIndices": [
+        2,
+        3
+      ],
+      "label": "Sentence Equivalence",
+      "words": [
+        "lucid"
+      ]
     },
     {
       "id": 3,
@@ -49,7 +63,11 @@
         "anachronistic"
       ],
       "correctIndex": 1,
-      "explanation": "'Pragmatic' (dealing with things sensibly and practically based on real-world results rather than theory) directly contrasts with 'purely theoretical musings' and aligns with 'quantifiable municipal data'."
+      "explanation": "'Pragmatic' (dealing with things sensibly and practically based on real-world results rather than theory) directly contrasts with 'purely theoretical musings' and aligns with 'quantifiable municipal data'.",
+      "words": [
+        "pragmatic"
+      ],
+      "label": "Text Completion"
     },
     {
       "id": 4,
@@ -63,7 +81,11 @@
         "pragmatic"
       ],
       "correctIndex": 0,
-      "explanation": "'Esoteric' refers to knowledge intended for or understood by only a small, specialized, initiated inner circle — in this case, 'secretive medieval guilds'."
+      "explanation": "'Esoteric' refers to knowledge intended for or understood by only a small, specialized, initiated inner circle — in this case, 'secretive medieval guilds'.",
+      "words": [
+        "esoteric"
+      ],
+      "label": "Text Completion"
     },
     {
       "id": 5,
@@ -74,10 +96,19 @@
         "infrequent",
         "omnipresent",
         "isolated",
-        "transitory"
+        "transitory",
+        "sporadic"
       ],
       "correctIndex": 0,
-      "explanation": "'Ubiquitous' and 'omnipresent' mean present or found everywhere simultaneously, matching the universal penetration of smartphone notifications in modern life."
+      "explanation": "'Constant sensory bombardment' tells you notifications are everywhere: 'ubiquitous' and 'omnipresent' both mean that. 'Infrequent' and 'sporadic' are the trap pair: they mean the same as each other, but they contradict 'constant'.",
+      "correctIndices": [
+        0,
+        2
+      ],
+      "label": "Sentence Equivalence",
+      "words": [
+        "ubiquitous"
+      ]
     }
   ]
 }
