@@ -884,6 +884,7 @@ function gemini_(prompt, temperature) {
 function geminiCall_(model, prompt, temperature) {
   const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
   const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: temperature, responseMimeType: 'application/json' } };
+  let last = '';
   for (let attempt = 1; attempt <= 3; attempt++) {
     const res = UrlFetchApp.fetch(url, { method: 'post', contentType: 'application/json', payload: JSON.stringify(payload), muteHttpExceptions: true, headers: { 'x-goog-api-key': prop_('GEMINI_API_KEY') } });
     const code = res.getResponseCode();
@@ -893,6 +894,7 @@ function geminiCall_(model, prompt, temperature) {
       const text = parts.filter(p => !p.thought).map(p => p.text || '').join('');
       const parsed = safeJson_(text.replace(/^\s*```(?:json)?/, '').replace(/```\s*$/, '').trim(), null);
       if (parsed) return parsed;
+      last = 'reply was not JSON: ' + (text || JSON.stringify(data).slice(0, 300)).slice(0, 300);
     } else if (code === 404) {
       throw new Error('MODEL_GONE ' + model + ': ' + res.getContentText().slice(0, 160));
     } else if (code === 429 && /per.?day|PerDay|daily/i.test(res.getContentText())) {
@@ -900,9 +902,10 @@ function geminiCall_(model, prompt, temperature) {
     } else if (code !== 429 && code < 500) {
       throw new Error('Gemini ' + code + ': ' + res.getContentText().slice(0, 200));
     }
+    if (code !== 200) last = 'HTTP ' + code + ': ' + res.getContentText().slice(0, 300);
     Utilities.sleep((code === 429 ? 20000 : 3000) * attempt); // per-minute limit: wait and retry
   }
-  throw new Error('Gemini gave no usable answer after 3 tries');
+  throw new Error('Gemini (' + model + ') gave no usable answer after 3 tries. Last: ' + last);
 }
 function github_(method, path, body) {
   const res = UrlFetchApp.fetch('https://api.github.com' + path, { method: method.toLowerCase(), muteHttpExceptions: true, contentType: 'application/json',
