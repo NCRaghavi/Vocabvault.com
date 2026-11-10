@@ -7,7 +7,7 @@
  *               Mon GRE · Tue GMAT · Wed IELTS · Thu TOEFL · Fri SAT · Sat PTE
  *   Sunday      6 quizzes, one per exam, in that exam's real question format.
  *               ~70% this week's featured words, ~30% words featured 3–4 weeks ago (spaced review)
- *   Every night up to 25 extra "vault" word pages (SEO background; VAULT_PER_NIGHT)
+ *   Every night up to 10 extra "vault" word pages (SEO background; VAULT_PER_NIGHT)
  *
  * SCHEDULE (IST) — all automatic after setupAutopilot()
  *   17:00 daily       nightlyRank()        rates and re-sorts any newly added AP_Queue words (does nothing if none)
@@ -29,7 +29,7 @@
 // ============================== CONFIG ==============================
 const CONFIG = {
   TIMEZONE: 'Asia/Kolkata',
-  VAULT_PER_NIGHT: 25,           // background vault pages per night (raise later, e.g. 50–100, once the site is established). Lower it if Search Console shows "Crawled – not indexed"
+  VAULT_PER_NIGHT: 10,           // background vault pages per night (+5 featured = 15 words ≈ 8 Gemini requests a day). Raise later. Lower it if Search Console shows "Crawled – not indexed"
                                  // or if you move hosting to Cloudflare Pages free (20,000-file cap per site).
   FEATURED_PER_DAY: 5,
   BATCH_SIZE: 10,                // words per Gemini call
