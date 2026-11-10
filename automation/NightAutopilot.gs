@@ -905,7 +905,7 @@ function geminiCall_(model, prompt, temperature) {
     } else if (code === 404) {
       throw new Error('MODEL_GONE ' + model + ': ' + res.getContentText().slice(0, 160));
     } else if (code === 429 && /per.?day|PerDay|daily/i.test(res.getContentText())) {
-      throw new Error('FREE_LIMIT: Gemini free daily limit reached');
+      throw new Error('FREE_LIMIT: Gemini free daily limit reached (' + model + '): ' + res.getContentText().replace(/\s+/g, ' ').slice(0, 600));
     } else if (code !== 429 && code < 500) {
       throw new Error('Gemini ' + code + ': ' + res.getContentText().slice(0, 200));
     }
