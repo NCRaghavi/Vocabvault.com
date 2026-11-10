@@ -103,12 +103,6 @@ export default function RootLayout({
                   PTE (Pearson)
                 </Link>
                 <Link
-                  href="/spotlights"
-                  className="px-2.5 py-1.5 rounded-lg hover:bg-slate-100 hover:text-blue-600 transition-colors"
-                >
-                  Lessons
-                </Link>
-                <Link
                   href="/words"
                   className="px-2.5 py-1.5 rounded-lg hover:bg-slate-100 hover:text-blue-600 transition-colors flex items-center gap-1"
                 >
@@ -143,7 +137,7 @@ export default function RootLayout({
           </div>
           {/* Phones: exam links in a scrollable row (the full menu only shows on wider screens) */}
           <nav aria-label="Exams" className="md:hidden flex gap-2 overflow-x-auto px-4 pb-2 text-xs font-semibold [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {[["GRE","/gre-weekly-challenge"],["GMAT","/gmat-weekly-challenge"],["IELTS","/ielts-weekly-challenge"],["TOEFL","/toefl-weekly-challenge"],["SAT","/sat-weekly-challenge"],["PTE","/pte-weekly-challenge"],["Lessons","/spotlights"],["Vault","/words"]].map(([label, href]) => (
+            {[["GRE","/gre-weekly-challenge"],["GMAT","/gmat-weekly-challenge"],["IELTS","/ielts-weekly-challenge"],["TOEFL","/toefl-weekly-challenge"],["SAT","/sat-weekly-challenge"],["PTE","/pte-weekly-challenge"],["Vault","/words"]].map(([label, href]) => (
               <Link key={href} href={href} className="shrink-0 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700">
                 {label}
               </Link>
@@ -246,7 +240,7 @@ export default function RootLayout({
                 </h4>
                 <ul className="space-y-2 text-sm">
                   <li><Link href="/#today" className="hover:text-white transition-colors">Today&apos;s 5 words</Link></li>
-                  <li><Link href="/spotlights" className="hover:text-white transition-colors">Exam lessons</Link></li>
+                  <li><Link href="/spotlights" className="hover:text-white transition-colors">All lessons (archive)</Link></li>
                   <li><Link href="/vault/a" className="hover:text-white transition-colors">Vault A–Z</Link></li>
                 </ul>
               </div>

@@ -134,17 +134,17 @@ export default function HomePage() {
               <p className="text-sm text-slate-300 leading-relaxed mb-4">
                 One lesson a day, Monday to Saturday, each putting this week&apos;s words inside one exam&apos;s questions.
               </p>
-              <ul className="space-y-1 text-xs text-slate-300 font-mono mb-4">
+              <ul className="space-y-1.5 text-sm">
                 {EXAM_CONFIG.map((e) => (
                   <li key={e.id}>
-                    {e.lessonDay}: {e.name}
+                    <Link href={`${e.href}#lesson`} className="flex justify-between text-slate-200 hover:text-white">
+                      <span>{e.lessonDay}</span>
+                      <span className="font-semibold">{e.name} lesson →</span>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
-            <Link href="/spotlights" className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-white text-slate-900 font-bold text-xs hover:bg-blue-50 transition-colors">
-              Read the lessons <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
         </div>
       </section>
