@@ -1,13 +1,12 @@
 {
   "examId": "toefl",
-  "examTitle": "TOEFL iBT Academic Verbal Challenge",
-  "subtitle": "Computer-Based Assessment of Academic Reading Vocabulary in Context and Lexical Inferences.",
+  "examTitle": "Sunday TOEFL Quiz",
+  "subtitle": "5 questions in real TOEFL format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 35,
   "passingScorePercentage": 75,
   "instructions": [
-    "TOEFL iBT Academic Reading Format: 35 seconds per item.",
-    "Lexical In Context: Determine the exact meaning of academic vocabulary as used in university-level texts.",
-    "Scoring benchmark: Target 26-30 on the TOEFL Reading section."
+    "You have 35 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {

@@ -1,13 +1,12 @@
 {
   "examId": "gre",
-  "examTitle": "GRE Weekly Master CBT Challenge",
-  "subtitle": "Computer-Based Testing simulation focusing on Advanced Text Completion and Sentence Equivalence.",
+  "examTitle": "Sunday GRE Quiz",
+  "subtitle": "5 questions in real GRE format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 45,
   "passingScorePercentage": 70,
   "instructions": [
-    "Timed CBT Environment: You have 45 seconds per question.",
-    "Immediate scoring and algorithmic breakdown provided upon submission.",
-    "Select the single best lexical completion for each item."
+    "You have 45 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {

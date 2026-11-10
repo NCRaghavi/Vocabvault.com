@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAllWords, getFeaturedWords } from "@/lib/content";
 import { EXAM_CONFIG, SITE } from "@/config/site";
 import Signup from "@/components/Signup";
+import { MdInline } from "@/components/Markdown";
 import { ArrowRight, BookOpen, Brain, CalendarCheck, ChevronRight, Clock, FileText, Layers, RotateCcw, Sparkles } from "lucide-react";
 
 export default function HomePage() {
@@ -106,11 +107,11 @@ export default function HomePage() {
                   <span className="text-xs font-mono text-slate-500">{item.phonetic}</span>
                   <span className="text-[11px] font-medium italic text-slate-400">• {item.partOfSpeech}</span>
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">{item.definitionSnippet}</p>
+                <p className="text-slate-600 text-sm leading-relaxed mb-4"><MdInline text={item.definitionSnippet} /></p>
                 {item.memoryTrick?.mnemonic && (
                   <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4 text-xs text-slate-600">
                     <span className="font-bold text-slate-800 block mb-0.5 text-[11px] uppercase tracking-wider">Memory trick</span>
-                    <p className="line-clamp-2 italic">{item.memoryTrick.mnemonic}</p>
+                    <p className="line-clamp-2"><MdInline text={item.memoryTrick.mnemonic} /></p>
                   </div>
                 )}
               </div>

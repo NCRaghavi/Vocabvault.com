@@ -1,13 +1,12 @@
 {
   "examId": "gmat",
-  "examTitle": "GMAT Focus Verbal Reasoning Challenge",
-  "subtitle": "Computer-Based Testing simulation for GMAT Critical Reasoning and Reading Comprehension vocabulary.",
+  "examTitle": "Sunday GMAT Quiz",
+  "subtitle": "5 questions in real GMAT format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 45,
   "passingScorePercentage": 70,
   "instructions": [
-    "GMAT Focus Format: 45 seconds per question.",
-    "Critical Reasoning Focus: Analyze lexical precision, premise assumptions, and argument validity.",
-    "Select the single best answer that completes the argument or clarifies the logical flaw."
+    "You have 45 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {

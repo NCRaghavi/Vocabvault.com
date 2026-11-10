@@ -55,6 +55,14 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
 
   useEffect(() => setUnlocked(readUnlocked()), []);
 
+  // Keep the question in view when the quiz starts, moves on, or finishes (important on phones).
+  const cardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (phase === "start") return;
+    const el = cardRef.current;
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [phase, index]);
+
   const advance = useCallback(() => {
     setIndex((i) => {
       if (i < questions.length - 1) {
@@ -128,7 +136,7 @@ export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
 
   return (
     <div className="w-full">
-      <div id="cbt-quiz-card" className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-10 transition-all">
+      <div id="cbt-quiz-card" ref={cardRef} className="scroll-mt-24 max-w-2xl mx-auto bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-10 transition-all">
         {phase === "start" && (
           <div className="space-y-6 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 mb-2 shadow-inner">

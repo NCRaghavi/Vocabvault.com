@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllWords, getWordBySlug, examIdFromTag } from "@/lib/content";
 import { examById } from "@/config/site";
-import Markdown from "@/components/Markdown";
+import Markdown, { MdInline } from "@/components/Markdown";
 import Signup from "@/components/Signup";
 import AudioPronounceButton from "@/components/AudioPronounceButton";
 import AdSlot from "@/components/AdSlot";
@@ -86,7 +86,9 @@ export default function WordPage({ params }: WordPageProps) {
   const allWords = getAllWords();
   const pos = allWords.findIndex((w) => w.slug === word.slug);
   // Neighbours in the vault, so every page links to a few others (helps readers and search engines find them)
-  const otherWords = [...allWords.slice(Math.max(0, pos - 2), pos), ...allWords.slice(pos + 1, pos + 3)].slice(0, 4);
+  const others = allWords.filter((w) => w.slug !== word.slug);
+  const startAt = Math.min(Math.max(0, pos - 2), Math.max(0, others.length - 4));
+  const otherWords = others.slice(startAt, startAt + 4);
   const quizExam = examById(word.examTags.map((t) => examIdFromTag(t)).find(Boolean) || "gre")!;
   const known = new Set(allWords.map((w) => w.slug));
   const synSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -183,7 +185,7 @@ export default function WordPage({ params }: WordPageProps) {
                 </h2>
               </div>
               <div className="prose text-slate-700 text-base sm:text-lg leading-relaxed">
-                <p>{word.fullDefinition}</p>
+                <p><MdInline text={word.fullDefinition} /></p>
               </div>
             </section>
 
@@ -203,7 +205,7 @@ export default function WordPage({ params }: WordPageProps) {
               <div className="space-y-3">
                 {word.examples.map((ex, i) => (
                   <div key={i} className="bg-slate-50 border-l-4 border-emerald-500 rounded-r-2xl p-5">
-                    <p className="text-slate-800 text-base sm:text-lg leading-relaxed font-serif">{ex}</p>
+                    <p className="text-slate-800 text-base sm:text-lg leading-relaxed font-serif"><MdInline text={ex} /></p>
                   </div>
                 ))}
               </div>
@@ -296,7 +298,7 @@ export default function WordPage({ params }: WordPageProps) {
                     🧠 Remember it
                   </span>
                   <p className="text-base text-slate-800 font-medium leading-relaxed">
-                    {word.memoryTrick.mnemonic}
+                    <MdInline text={word.memoryTrick.mnemonic} />
                   </p>
                 </div>
 
@@ -306,7 +308,7 @@ export default function WordPage({ params }: WordPageProps) {
                     🏛️ Where it comes from
                   </span>
                   <p className="text-sm text-slate-700 leading-relaxed">
-                    {word.memoryTrick.etymology}
+                    <MdInline text={word.memoryTrick.etymology} />
                   </p>
                 </div>
               </div>

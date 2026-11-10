@@ -41,6 +41,11 @@ function inline(text: string, keyBase: string): ReactNode[] {
   return out;
 }
 
+/** One line of text with **bold**, *italic* and links, for short fields like memory tricks. */
+export function MdInline({ text }: { text: string }) {
+  return <>{inline(text, "i")}</>;
+}
+
 export default function Markdown({ source }: { source: string }) {
   const lines = source.replace(/\r\n/g, "\n").split("\n");
   const blocks: ReactNode[] = [];

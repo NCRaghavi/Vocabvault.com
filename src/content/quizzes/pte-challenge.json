@@ -1,13 +1,12 @@
 {
   "examId": "pte",
-  "examTitle": "PTE Academic Reading & Verbal Challenge",
-  "subtitle": "Computer-Based Testing simulation for Pearson Test of English Reading: Fill in the Blanks & Collocations.",
+  "examTitle": "Sunday PTE Quiz",
+  "subtitle": "5 questions in real PTE format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 40,
   "passingScorePercentage": 75,
   "instructions": [
-    "PTE Academic CBT Timing: 40 seconds per question item.",
-    "Reading & Writing Fill in the Blanks: Select the word that best matches academic grammar and academic collocation conventions.",
-    "Benchmark score: 79+ (equivalent to IELTS Band 8.0)."
+    "You have 40 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {
