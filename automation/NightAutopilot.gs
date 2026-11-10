@@ -38,9 +38,12 @@ const CONFIG = {
   RUN_BUDGET_MS: 200000,         // stop starting new batches after ~3.3 min (Apps Script hard limit is 6 min)
   REVIEW_SHARE: 0.3,             // share of quiz words from 3–4 weeks ago
   QUIZ_DRAFT: 16, QUIZ_KEEP: 10, QUIZ_MIN: 5, // 10 go on the site, up to 6 spares become Vault Pass bonus questions
-  // Tried in order; if Google retires one (HTTP 404), the next is used and remembered. Free tier as long as no
-  // billing account is linked to the API key.
-  GEMINI_MODELS: ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-3.5-flash'],
+  // Free tier = no billing account linked to the API key. Google's free tier allows ~20 requests a day PER MODEL,
+  // so the script rotates: when a model hits its daily limit (or is retired), the next one is used.
+  GEMINI_MODELS: ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-3.5-flash-lite', 'gemini-flash-lite-latest'],
+  // Cheaper models used first for simple jobs (ranking the word queue), to save the main models for writing.
+  GEMINI_MODELS_LIGHT: ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.1-flash-lite'],
+  RANK_CALLS_PER_DAY: 12,        // ranking budget per day (150 words a call ≈ 1,800 words a day)
   // Paths in the NCRaghavi/Vocabvault.com repo (Next.js reads these at build time)
   PATHS: {
     WORDS: 'src/content/words',            // <slug>.md
@@ -863,31 +866,38 @@ function packsFolder_() {
 }
 
 // ============================== HTTP HELPERS ==============================
-function geminiModel_() {
-  const saved = props_().getProperty('GEMINI_MODEL_OK');
-  return saved && CONFIG.GEMINI_MODELS.indexOf(saved) >= 0 ? saved : CONFIG.GEMINI_MODELS[0];
-}
-function gemini_(prompt, temperature) {
-  let model = geminiModel_();
-  for (let tries = 0; tries < CONFIG.GEMINI_MODELS.length; tries++) {
+/** Models skipped until Google's reset time, e.g. {"gemini-3.8-flash": 1794400000000}. */
+function geminiSpent_() { return safeJson_(props_().getProperty('GEMINI_SPENT'), {}) || {}; }
+function markSpent_(model, untilMs) { const m = geminiSpent_(); m[model] = untilMs; props_().setProperty('GEMINI_SPENT', JSON.stringify(m)); }
+
+/** Calls Gemini, rotating through models: daily limit or retirement → next model; overload → next model for this call. */
+function gemini_(prompt, temperature, light) {
+  const order = light ? CONFIG.GEMINI_MODELS_LIGHT.concat(CONFIG.GEMINI_MODELS) : CONFIG.GEMINI_MODELS;
+  const gone = safeJson_(props_().getProperty('GEMINI_GONE'), []) || [];
+  const spent = geminiSpent_(), now = Date.now();
+  const models = order.filter((m, i) => order.indexOf(m) === i && gone.indexOf(m) < 0 && !(spent[m] > now));
+  let lastErr = null;
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
     try { return geminiCall_(model, prompt, temperature); }
     catch (err) {
-      if (/HTTP 5\d\d/.test(err.message)) {
-        // Google overloaded: try the next model for this request only (don't remember it)
-        const alt = CONFIG.GEMINI_MODELS[CONFIG.GEMINI_MODELS.indexOf(model) + 1];
-        if (!alt) throw err;
-        model = alt;
-        continue;
-      }
-      if (!/MODEL_GONE/.test(err.message)) throw err;
-      const next = CONFIG.GEMINI_MODELS[CONFIG.GEMINI_MODELS.indexOf(model) + 1];
-      if (!next) throw new Error('No Gemini model in CONFIG.GEMINI_MODELS is available: ' + err.message);
-      model = next;
-      props_().setProperty('GEMINI_MODEL_OK', model);
-      log_('gemini', 'WARN', 'Model retired by Google; switched to ' + model);
+      lastErr = err;
+      if (/MODEL_GONE/.test(err.message)) { gone.push(model); props_().setProperty('GEMINI_GONE', JSON.stringify(gone)); log_('gemini', 'WARN', model + ' retired by Google; using the next model.'); continue; }
+      if (/FREE_LIMIT/.test(err.message)) { markSpent_(model, now + retryMs_(err.message)); continue; }
+      if (/HTTP 5\d\d/.test(err.message)) continue; // overloaded: next model for this request
+      throw err;
     }
   }
+  throw new Error('FREE_LIMIT: every Gemini model is at its free daily limit or unavailable. ' + (lastErr ? lastErr.message.slice(0, 200) : ''));
 }
+
+/** Reads "retry in 9h20m32s" from Google's message; defaults to 12 hours. */
+function retryMs_(msg) {
+  const m = /retry in (?:(\d+)h)?(?:(\d+)m)?(?:([\d.]+)s)?/i.exec(msg || '');
+  if (!m) return 12 * 3600000;
+  return ((Number(m[1] || 0) * 60 + Number(m[2] || 0)) * 60 + Number(m[3] || 0)) * 1000 + 60000;
+}
+
 function geminiCall_(model, prompt, temperature) {
   const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
   const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: temperature, responseMimeType: 'application/json' } };

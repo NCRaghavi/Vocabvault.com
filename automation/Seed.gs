@@ -59,24 +59,34 @@ function rankQueue() {
   const todo = [];
   vals.forEach((r, i) => { if (String(r[0]).trim() && !r[1]) todo.push(i); });
   const BATCH = 150;
-  let ranked = 0;
+  const dayKey = 'RANK_CALLS_' + today_();
+  let callsToday = Number(props_().getProperty(dayKey) || 0);
+  let ranked = 0, stopped = '';
   for (let b = 0; b < todo.length && Date.now() - t0 < 300000; b += BATCH) {
+    if (callsToday >= CONFIG.RANK_CALLS_PER_DAY) { stopped = 'daily ranking budget used'; break; }
     const idx = todo.slice(b, b + BATCH);
     const words = idx.map(i => String(vals[i][0]).trim().toLowerCase());
-    const r = gemini_(`Rate each word for students preparing for GRE, GMAT, IELTS, TOEFL, SAT and PTE.
+    let r;
+    try {
+      callsToday++; props_().setProperty(dayKey, String(callsToday));
+      r = gemini_(`Rate each word for students preparing for GRE, GMAT, IELTS, TOEFL, SAT and PTE.
 "high": appears often in these exams or in academic reading/writing and is worth learning early.
 "medium": useful academic vocabulary, less frequent in tests.
 "low": real but rare or very specialised.
 "skip": not worth a vocabulary page: proper noun, misspelling, not an English word, archaic, slang, or offensive.
 Words: ${JSON.stringify(words)}
-Return JSON {"ranks": {"<word>": "high" | "medium" | "low" | "skip"}} with every word.`, 0);
+Return JSON {"ranks": {"<word>": "high" | "medium" | "low" | "skip"}} with every word.`, 0, true);
+    } catch (err) {
+      if (/FREE_LIMIT/.test(err.message)) { stopped = 'Gemini free limit reached'; break; }
+      throw err;
+    }
     const ranks = r.ranks || {};
     idx.forEach((i, k) => { vals[i][1] = ['high', 'medium', 'low', 'skip'].indexOf(ranks[words[k]]) >= 0 ? ranks[words[k]] : 'medium'; });
     sh.getRange(2, 1, n, 2).setValues(vals); // save progress after every batch
     ranked += idx.length;
   }
   const left = vals.filter(r => String(r[0]).trim() && !r[1]).length;
-  if (left) { Logger.log('Ranked ' + ranked + ' this run; ' + left + ' left. Run rankQueue again.'); return left; }
+  if (left) { Logger.log('Ranked ' + ranked + ' this run; ' + left + ' left' + (stopped ? ' (' + stopped + '; continues tomorrow at 5 PM).' : '. Run rankQueue again.')); return left; }
 
   // All ranked: move skips out, then sort high → medium → low, shuffled within each group.
   const keep = { high: [], medium: [], low: [] }, skipped = [];
