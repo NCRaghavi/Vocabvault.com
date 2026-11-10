@@ -42,3 +42,60 @@ function shuffleQueues() {
   Logger.log(out.join(' · '));
   return out;
 }
+
+/**
+ * Ranks every word in AP_Queue by how useful it is for GRE, GMAT, IELTS, TOEFL, SAT and PTE,
+ * then re-sorts the queue: high → medium → low (shuffled within each group).
+ * Words that aren't worth a page (proper nouns, typos, archaic or offensive words) move to AP_Skipped.
+ * Needs GEMINI_API_KEY. Run it until the log says "Ranking complete" (each run handles ~5 minutes of work).
+ */
+function rankQueue() {
+  const t0 = Date.now();
+  const sh = sheet_(CONFIG.SHEETS.QUEUE);
+  sh.getRange(1, 1, 1, 2).setValues([['word', 'priority']]);
+  const n = sh.getLastRow() - 1;
+  if (n < 1) return 'Queue is empty.';
+  const vals = sh.getRange(2, 1, n, 2).getValues();
+  const todo = [];
+  vals.forEach((r, i) => { if (String(r[0]).trim() && !r[1]) todo.push(i); });
+  const BATCH = 150;
+  let ranked = 0;
+  for (let b = 0; b < todo.length && Date.now() - t0 < 300000; b += BATCH) {
+    const idx = todo.slice(b, b + BATCH);
+    const words = idx.map(i => String(vals[i][0]).trim().toLowerCase());
+    const r = gemini_(`Rate each word for students preparing for GRE, GMAT, IELTS, TOEFL, SAT and PTE.
+"high": appears often in these exams or in academic reading/writing and is worth learning early.
+"medium": useful academic vocabulary, less frequent in tests.
+"low": real but rare or very specialised.
+"skip": not worth a vocabulary page: proper noun, misspelling, not an English word, archaic, slang, or offensive.
+Words: ${JSON.stringify(words)}
+Return JSON {"ranks": {"<word>": "high" | "medium" | "low" | "skip"}} with every word.`, 0);
+    const ranks = r.ranks || {};
+    idx.forEach((i, k) => { vals[i][1] = ['high', 'medium', 'low', 'skip'].indexOf(ranks[words[k]]) >= 0 ? ranks[words[k]] : 'medium'; });
+    sh.getRange(2, 1, n, 2).setValues(vals); // save progress after every batch
+    ranked += idx.length;
+  }
+  const left = vals.filter(r => String(r[0]).trim() && !r[1]).length;
+  if (left) { Logger.log('Ranked ' + ranked + ' this run; ' + left + ' left. Run rankQueue again.'); return left; }
+
+  // All ranked: move skips out, then sort high → medium → low, shuffled within each group.
+  const keep = { high: [], medium: [], low: [] }, skipped = [];
+  const seen = new Set();
+  vals.forEach(r => {
+    const w = String(r[0]).trim().toLowerCase();
+    if (!w || seen.has(w)) return;
+    seen.add(w);
+    if (r[1] === 'skip') skipped.push([w]); else (keep[r[1]] || keep.medium).push([w, r[1]]);
+  });
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+  const sorted = shuffle(keep.high).concat(shuffle(keep.medium), shuffle(keep.low));
+  sh.getRange(2, 1, n, 2).clearContent();
+  if (sorted.length) sh.getRange(2, 1, sorted.length, 2).setValues(sorted);
+  if (skipped.length) {
+    const sk = ensureSheet_('AP_Skipped', ['word']);
+    sk.getRange(sk.getLastRow() + 1, 1, skipped.length, 1).setValues(skipped);
+  }
+  const msg = `Ranking complete: ${keep.high.length} high, ${keep.medium.length} medium, ${keep.low.length} low; ${skipped.length} moved to AP_Skipped; ${vals.length - seen.size} duplicates removed.`;
+  Logger.log(msg);
+  return msg;
+}
