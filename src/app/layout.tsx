@@ -41,16 +41,16 @@ export default function RootLayout({
               {/* Logo */}
               <div className="flex items-center space-x-3">
                 <Link href="/" className="flex items-center gap-2 group">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-xl bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
                     <GraduationCap className="w-6 h-6" />
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-700 transition-colors">
+                      <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-700 transition-colors">
                         Verbal<span className="text-blue-600">Vault</span>Prep
                       </span>
                     </div>
-                    <p className="text-[10px] tracking-wider uppercase font-semibold text-slate-500 -mt-1 font-mono">
+                    <p className="hidden sm:block text-[10px] tracking-wider uppercase font-semibold text-slate-500 -mt-1 font-mono">
                       Learn it · use it · remember it
                     </p>
                   </div>
@@ -133,13 +133,14 @@ export default function RootLayout({
                   href="/#exams"
                   className="inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-bold text-white bg-blue-700 rounded-lg hover:bg-blue-800 transition-all shadow-sm hover:shadow active:scale-95"
                 >
-                  Take Sunday&apos;s quiz
+                  <span className="sm:hidden">Sunday quiz</span>
+                  <span className="hidden sm:inline">Take Sunday&apos;s quiz</span>
                 </Link>
               </div>
             </div>
           </div>
           {/* Phones: exam links in a scrollable row (the full menu only shows on wider screens) */}
-          <nav aria-label="Exams" className="md:hidden flex gap-2 overflow-x-auto px-4 pb-2 text-xs font-semibold">
+          <nav aria-label="Exams" className="md:hidden flex gap-2 overflow-x-auto px-4 pb-2 text-xs font-semibold [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {[["GRE","/gre-weekly-challenge"],["GMAT","/gmat-weekly-challenge"],["IELTS","/ielts-weekly-challenge"],["TOEFL","/toefl-weekly-challenge"],["SAT","/sat-weekly-challenge"],["PTE","/pte-weekly-challenge"],["Lessons","/spotlights"],["Vault","/words"]].map(([label, href]) => (
               <Link key={href} href={href} className="shrink-0 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700">
                 {label}
