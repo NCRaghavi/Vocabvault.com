@@ -38,7 +38,9 @@ const CONFIG = {
   RUN_BUDGET_MS: 200000,         // stop starting new batches after ~3.3 min (Apps Script hard limit is 6 min)
   REVIEW_SHARE: 0.3,             // share of quiz words from 3–4 weeks ago
   QUIZ_DRAFT: 16, QUIZ_KEEP: 10, QUIZ_MIN: 5, // 10 go on the site, up to 6 spares become Vault Pass bonus questions
-  GEMINI_MODEL: 'gemini-2.5-flash', // runs on Gemini's FREE tier as long as no billing account is linked to the API key
+  // Tried in order; if Google retires one (HTTP 404), the next is used and remembered. Free tier as long as no
+  // billing account is linked to the API key.
+  GEMINI_MODELS: ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-3.5-flash'],
   // Paths in the NCRaghavi/Vocabvault.com repo (Next.js reads these at build time)
   PATHS: {
     WORDS: 'src/content/words',            // <slug>.md
@@ -861,8 +863,26 @@ function packsFolder_() {
 }
 
 // ============================== HTTP HELPERS ==============================
+function geminiModel_() {
+  const saved = props_().getProperty('GEMINI_MODEL_OK');
+  return saved && CONFIG.GEMINI_MODELS.indexOf(saved) >= 0 ? saved : CONFIG.GEMINI_MODELS[0];
+}
 function gemini_(prompt, temperature) {
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + CONFIG.GEMINI_MODEL + ':generateContent';
+  let model = geminiModel_();
+  for (let tries = 0; tries < CONFIG.GEMINI_MODELS.length; tries++) {
+    try { return geminiCall_(model, prompt, temperature); }
+    catch (err) {
+      if (!/MODEL_GONE/.test(err.message)) throw err;
+      const next = CONFIG.GEMINI_MODELS[CONFIG.GEMINI_MODELS.indexOf(model) + 1];
+      if (!next) throw new Error('No Gemini model in CONFIG.GEMINI_MODELS is available: ' + err.message);
+      model = next;
+      props_().setProperty('GEMINI_MODEL_OK', model);
+      log_('gemini', 'WARN', 'Model retired by Google; switched to ' + model);
+    }
+  }
+}
+function geminiCall_(model, prompt, temperature) {
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
   const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: temperature, responseMimeType: 'application/json' } };
   for (let attempt = 1; attempt <= 3; attempt++) {
     const res = UrlFetchApp.fetch(url, { method: 'post', contentType: 'application/json', payload: JSON.stringify(payload), muteHttpExceptions: true, headers: { 'x-goog-api-key': prop_('GEMINI_API_KEY') } });
@@ -873,6 +893,8 @@ function gemini_(prompt, temperature) {
       const text = parts.filter(p => !p.thought).map(p => p.text || '').join('');
       const parsed = safeJson_(text.replace(/^\s*```(?:json)?/, '').replace(/```\s*$/, '').trim(), null);
       if (parsed) return parsed;
+    } else if (code === 404) {
+      throw new Error('MODEL_GONE ' + model + ': ' + res.getContentText().slice(0, 160));
     } else if (code === 429 && /per.?day|PerDay|daily/i.test(res.getContentText())) {
       throw new Error('FREE_LIMIT: Gemini free daily limit reached');
     } else if (code !== 429 && code < 500) {
