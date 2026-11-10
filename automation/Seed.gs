@@ -99,3 +99,52 @@ Return JSON {"ranks": {"<word>": "high" | "medium" | "low" | "skip"}} with every
   Logger.log(msg);
   return msg;
 }
+
+/** Cleans one queue entry: drops (…), […], {…} meanings, extra spaces and capitals. */
+function cleanWord_(raw) {
+  let w = String(raw == null ? '' : raw);
+  for (let i = 0; i < 3; i++) w = w.replace(/\([^()]*\)|\[[^\[\]]*\]|\{[^{}]*\}/g, ' ');
+  w = w.replace(/[()\[\]{}]/g, ' ');                 // a bracket left open
+  w = w.replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim().toLowerCase();
+  w = w.replace(/^[^a-z]+|[^a-z]+$/g, '');           // stray punctuation at the ends
+  return w;
+}
+
+/** Shows what cleanQueue() would change, without changing anything. See View → Logs. */
+function previewCleanQueue() { return cleanQueue_(true); }
+
+/** Removes bracketed meanings from every AP_Queue word and drops duplicates / empty rows. */
+function cleanQueue() { return cleanQueue_(false); }
+
+function cleanQueue_(dryRun) {
+  const sh = sheet_(CONFIG.SHEETS.QUEUE);
+  const n = sh.getLastRow() - 1;
+  if (n < 1) return 'Queue is empty.';
+  const width = Math.max(2, sh.getLastColumn());
+  const rows = sh.getRange(2, 1, n, width).getValues();
+  const seen = new Set(), out = [], changed = [], odd = [];
+  let dupes = 0, empty = 0;
+  rows.forEach(r => {
+    const before = String(r[0] == null ? '' : r[0]).trim();
+    const w = cleanWord_(before);
+    if (!w) { if (before) empty++; return; }
+    if (seen.has(w)) { dupes++; return; }
+    seen.add(w);
+    if (w !== before) changed.push(before + '  →  ' + w);
+    if (!/^[a-z][a-z' -]*$/.test(w)) odd.push(w);
+    const row = r.slice(); row[0] = w; if (w !== before.toLowerCase()) row[1] = ''; // re-rank changed words
+    out.push(row);
+  });
+  const report = [
+    (dryRun ? 'PREVIEW (nothing changed): ' : 'CLEANED: ') + n + ' rows → ' + out.length + ' words.',
+    changed.length + ' entries changed, e.g.:', ...changed.slice(0, 15).map(s => '   ' + s),
+    dupes + ' duplicates removed, ' + empty + ' rows that were only a meaning removed.',
+    odd.length + ' entries still contain characters other than letters, spaces, hyphens or apostrophes' + (odd.length ? ' (they will be skipped), e.g.: ' + odd.slice(0, 10).join(' | ') : '.'),
+  ].join('\n');
+  if (!dryRun) {
+    sh.getRange(2, 1, n, width).clearContent();
+    if (out.length) sh.getRange(2, 1, out.length, width).setValues(out);
+  }
+  Logger.log(report);
+  return report;
+}
