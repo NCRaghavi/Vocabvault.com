@@ -20,3 +20,25 @@ function seedWordLists() {
   Logger.log('Added ' + f + ' featured words and ' + v + ' vault words.');
   return [f, v];
 }
+
+/**
+ * Shuffles both word queues so each day's words come from different letters.
+ * Safe to run any time (for example after pasting in a long alphabetical list).
+ */
+function shuffleQueues() {
+  const out = [];
+  [CONFIG.SHEETS.FEATURED_QUEUE, CONFIG.SHEETS.QUEUE].forEach(name => {
+    const sh = sheet_(name);
+    const n = sh.getLastRow() - 1;
+    if (n < 2) return;
+    const vals = sh.getRange(2, 1, n, 1).getValues();
+    for (let i = vals.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = vals[i]; vals[i] = vals[j]; vals[j] = t;
+    }
+    sh.getRange(2, 1, n, 1).setValues(vals);
+    out.push(name + ': ' + n + ' words shuffled');
+  });
+  Logger.log(out.join(' · '));
+  return out;
+}
