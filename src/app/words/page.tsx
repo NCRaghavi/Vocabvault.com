@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllWords } from "@/lib/content";
+import LetterBar from "@/components/LetterBar";
 import AdSlot from "@/components/AdSlot";
 import { BookOpen, ArrowRight, Search, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Complete Vocabulary Vault | VerbalVaultPrep",
+  title: "Vocabulary Vault: GRE, GMAT, IELTS, TOEFL, SAT & PTE Words | VerbalVaultPrep",
   description:
-    "Comprehensive academic dictionary and lexical breakdowns for GRE, IELTS, and SAT exams. Greek and Latin roots, mnemonics, and sentence examples.",
+    "Every word with a plain definition, three examples, synonyms and a memory trick. Browse A to Z or start with the newest words.",
+  alternates: { canonical: "https://verbalvaultprep.com/words" },
 };
 
 export default function WordsIndexPage() {
-  const words = getAllWords();
+  const all = getAllWords();
+  const words = all.slice(0, 60);
 
   return (
     <div className="bg-slate-50 min-h-screen py-10 sm:py-16">
@@ -20,20 +23,19 @@ export default function WordsIndexPage() {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-mono font-bold mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            Lexical Archive
+            {all.length.toLocaleString("en-IN")} words
           </div>
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-            The Academic Vocabulary Vault
+            The Vocabulary Vault
           </h1>
           <p className="mt-3 text-slate-600 text-base">
-            Every high-frequency word curated with rigorous academic definitions, high-pressure mnemonics, and test-calibrated contextual sentences.
+            Every word with a plain definition, three examples, synonyms and a memory trick. Browse A to Z, or start with the newest words below.
           </p>
+          <div className="flex justify-center"><LetterBar /></div>
         </div>
+        <h2 className="text-lg font-bold text-slate-900 mb-4">Newest words</h2>
 
-        {/* Ad Placement */}
-        <div className="mb-10">
-          <AdSlot type="leaderboard" />
-        </div>
+        <AdSlot type="leaderboard" className="mb-10" />
 
         {/* Word Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -45,7 +47,7 @@ export default function WordsIndexPage() {
             >
               <div>
                 <div className="flex flex-wrap gap-1 mb-2">
-                  {item.examTags.map((tag) => (
+                  {item.examTags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
                       className="px-2 py-0.5 text-[10px] font-semibold rounded bg-blue-50 text-blue-700"

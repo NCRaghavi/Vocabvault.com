@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getAllWords, getWordBySlug } from "@/lib/content";
+import { getAllWords, getWordBySlug, examIdFromTag } from "@/lib/content";
+import { examById } from "@/config/site";
+import Markdown from "@/components/Markdown";
+import Signup from "@/components/Signup";
 import AudioPronounceButton from "@/components/AudioPronounceButton";
 import AdSlot from "@/components/AdSlot";
 import {
@@ -40,12 +43,15 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     };
   }
 
-  const title = `${word.word} - Definition, Sentences & Memory Trick | VerbalVaultPrep`;
-  const description = `Learn ${word.word} (${word.phonetic}) for GRE, IELTS, and SAT. Definition: ${word.definitionSnippet} Includes contextual sentences, synonyms, antonyms, and mnemonic tricks.`;
+  const exams = word.examTags.map((t) => examIdFromTag(t)).filter(Boolean).map((id) => id!.toUpperCase());
+  const examList = Array.from(new Set(exams)).slice(0, 3).join(", ") || "GRE, IELTS and SAT";
+  const title = `${word.word}: Meaning, Examples & Memory Trick | VerbalVaultPrep`;
+  const description = `${word.word} (${word.partOfSpeech}): ${word.definitionSnippet} Examples for ${examList}, synonyms, antonyms and a memory trick.`.slice(0, 300);
 
   return {
     title,
     description,
+    alternates: { canonical: `https://verbalvaultprep.com/words/${word.slug}` },
     keywords: [
       word.word,
       `${word.word} definition`,
@@ -78,7 +84,12 @@ export default function WordPage({ params }: WordPageProps) {
   }
 
   const allWords = getAllWords();
-  const otherWords = allWords.filter((w) => w.slug !== word.slug).slice(0, 4);
+  const pos = allWords.findIndex((w) => w.slug === word.slug);
+  // Neighbours in the vault, so every page links to a few others (helps readers and search engines find them)
+  const otherWords = [...allWords.slice(Math.max(0, pos - 2), pos), ...allWords.slice(pos + 1, pos + 3)].slice(0, 4);
+  const quizExam = examById(word.examTags.map((t) => examIdFromTag(t)).find(Boolean) || "gre")!;
+  const known = new Set(allWords.map((w) => w.slug));
+  const synSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   // Structured Data (JSON-LD) for SEO
   const jsonLd = {
@@ -87,7 +98,7 @@ export default function WordPage({ params }: WordPageProps) {
     name: word.word,
     termCode: word.slug,
     description: word.fullDefinition,
-    inDefinedTermSet: "VerbalVaultPrep Academic Vocabulary Engine",
+    inDefinedTermSet: "VerbalVaultPrep Vocabulary Vault",
   };
 
   return (
@@ -112,10 +123,7 @@ export default function WordPage({ params }: WordPageProps) {
           <span className="text-slate-900 font-semibold">{word.word}</span>
         </nav>
 
-        {/* Top Whitespace & Leaderboard Ad Placement */}
-        <div className="mb-8">
-          <AdSlot type="leaderboard" />
-        </div>
+        <AdSlot type="leaderboard" className="mb-8" />
 
         {/* Main Content Grid: 8 Columns Main Content + 4 Columns Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
@@ -171,7 +179,7 @@ export default function WordPage({ params }: WordPageProps) {
                   1
                 </div>
                 <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Academic Definition & Lexical Register
+                  Meaning
                 </h2>
               </div>
               <div className="prose text-slate-700 text-base sm:text-lg leading-relaxed">
@@ -189,24 +197,19 @@ export default function WordPage({ params }: WordPageProps) {
                   2
                 </div>
                 <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                  In Context (Sentence Example)
+                  In context
                 </h2>
               </div>
-              <div className="bg-slate-50 border-l-4 border-emerald-500 rounded-r-2xl p-5 my-2">
-                <p className="text-slate-800 text-base sm:text-lg leading-relaxed font-serif">
-                  {word.inContext}
-                </p>
-                <div className="mt-3 flex items-center gap-2 text-xs font-mono text-slate-500">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                  Tested Pattern: Academic journal register / GRE passage style
-                </div>
+              <div className="space-y-3">
+                {word.examples.map((ex, i) => (
+                  <div key={i} className="bg-slate-50 border-l-4 border-emerald-500 rounded-r-2xl p-5">
+                    <p className="text-slate-800 text-base sm:text-lg leading-relaxed font-serif">{ex}</p>
+                  </div>
+                ))}
               </div>
             </section>
 
-            {/* MID-CONTENT AD PLACEMENT WITH GENEROUS WHITESPACE */}
-            <div className="my-8">
-              <AdSlot type="in-article" />
-            </div>
+            <AdSlot type="in-article" className="my-8" />
 
             {/* BLOCK 3 & BLOCK 4: SYNONYMS & ANTONYMS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -224,19 +227,20 @@ export default function WordPage({ params }: WordPageProps) {
                       Synonyms
                     </h2>
                   </div>
-                  <p className="text-xs text-slate-500 mb-3">
-                    High-yield lexical substitutes for writing & sentence equivalence:
-                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {word.synonyms.map((syn) => (
-                      <span
-                        key={syn}
-                        className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-100 hover:bg-indigo-100 transition-colors"
-                      >
-                        {syn}
-                      </span>
-                    ))}
+                    {word.synonyms.map((syn) =>
+                      known.has(synSlug(syn)) ? (
+                        <Link key={syn} href={`/words/${synSlug(syn)}`} className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-100 hover:bg-indigo-100 transition-colors">
+                          {syn}
+                        </Link>
+                      ) : (
+                        <span key={syn} className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-100">
+                          {syn}
+                        </span>
+                      )
+                    )}
                   </div>
+                  {word.synonymNuance && <p className="mt-4 text-sm text-slate-600 leading-relaxed">{word.synonymNuance}</p>}
                 </div>
               </section>
 
@@ -254,9 +258,6 @@ export default function WordPage({ params }: WordPageProps) {
                       Antonyms
                     </h2>
                   </div>
-                  <p className="text-xs text-slate-500 mb-3">
-                    Opposing polarities frequently tested in contrast questions:
-                  </p>
                   <div className="flex flex-wrap gap-2">
                     {word.antonyms.map((ant) => (
                       <span
@@ -282,11 +283,9 @@ export default function WordPage({ params }: WordPageProps) {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                    Memory Trick & Retention Anchors
+                    Memory trick
                   </h2>
-                  <p className="text-xs text-slate-500">
-                    Engineered for high-pressure recall during timed exams
-                  </p>
+
                 </div>
               </div>
 
@@ -294,7 +293,7 @@ export default function WordPage({ params }: WordPageProps) {
                 {/* Mnemonic Anchor */}
                 <div className="bg-white rounded-2xl p-5 border border-amber-200/80 shadow-xs">
                   <span className="text-xs font-bold uppercase tracking-wider text-amber-700 font-mono block mb-1">
-                    🧠 Acoustic / Visual Mnemonic
+                    🧠 Remember it
                   </span>
                   <p className="text-base text-slate-800 font-medium leading-relaxed">
                     {word.memoryTrick.mnemonic}
@@ -304,7 +303,7 @@ export default function WordPage({ params }: WordPageProps) {
                 {/* Etymology Breakdown */}
                 <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-600 font-mono block mb-1">
-                    🏛️ Greek & Latin Root Analysis
+                    🏛️ Where it comes from
                   </span>
                   <p className="text-sm text-slate-700 leading-relaxed">
                     {word.memoryTrick.etymology}
@@ -313,19 +312,35 @@ export default function WordPage({ params }: WordPageProps) {
               </div>
             </section>
 
-            {/* Additional Markdown Content if present */}
-            {word.content && (
-              <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm prose prose-slate max-w-none">
-                <div className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
-                  {word.content}
-                </div>
+            {(word.examNote || word.content) && (
+              <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+                <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-2">How exams test it</h2>
+                {word.examNote && <p className="text-slate-700 leading-relaxed">{word.examNote}</p>}
+                {word.content && <Markdown source={word.content} />}
               </section>
             )}
 
-            {/* Bottom Whitespace & Footer Ad Placement */}
-            <div className="pt-6">
-              <AdSlot type="footer" />
-            </div>
+            {word.quickCheck && (
+              <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+                <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-3">Quick check</h2>
+                <p className="font-serif text-lg text-slate-800">{word.quickCheck.prompt}</p>
+                <ol className="mt-3 space-y-1 text-slate-700 list-[upper-alpha] pl-6">
+                  {word.quickCheck.options.map((o, i) => (
+                    <li key={i}>{o}</li>
+                  ))}
+                </ol>
+                <details className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
+                  <summary className="cursor-pointer font-semibold text-blue-700">Show answer</summary>
+                  <p className="mt-2">
+                    <strong>{word.quickCheck.options[word.quickCheck.answerIndex]}</strong>. {word.quickCheck.explanation}
+                  </p>
+                </details>
+              </section>
+            )}
+
+            <Signup exam={quizExam.name} />
+
+            <AdSlot type="footer" className="pt-6" />
           </article>
 
           {/* Sticky Academic Sidebar */}
@@ -333,19 +348,19 @@ export default function WordPage({ params }: WordPageProps) {
             {/* Quick Test Card */}
             <div className="bg-gradient-to-br from-blue-900 to-slate-900 text-white rounded-3xl p-6 border border-blue-800 shadow-sm">
               <span className="text-[10px] font-mono uppercase tracking-widest text-blue-300 font-bold bg-blue-800/60 px-2.5 py-1 rounded-md">
-                Active CBT Diagnostic
+                Sunday quiz
               </span>
               <h3 className="mt-4 text-xl font-extrabold text-white">
-                Test Your Knowledge
+                Will you remember it on Sunday?
               </h3>
               <p className="mt-2 text-xs text-slate-300 leading-relaxed">
-                See how &ldquo;{word.word}&rdquo; appears in authentic GRE text completions with our 45-second timer.
+                This week&apos;s words come back in Sunday&apos;s {quizExam.name} quiz, in real exam format.
               </p>
               <Link
-                href="/gre-weekly-challenge"
+                href={quizExam.href}
                 className="mt-5 inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md active:scale-95"
               >
-                <span>Launch GRE Challenge</span>
+                <span>Take the {quizExam.name} quiz</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -358,7 +373,7 @@ export default function WordPage({ params }: WordPageProps) {
               <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
                 <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-blue-600" />
-                  Related High-Yield Words
+                  More words
                 </h4>
                 <div className="space-y-3">
                   {otherWords.map((item) => (
