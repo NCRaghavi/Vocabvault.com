@@ -32,10 +32,12 @@ const CONFIG = {
   VAULT_PER_NIGHT: 10,           // background vault pages per night (+5 featured = 15 words ≈ 8 Gemini requests a day). Raise later. Lower it if Search Console shows "Crawled – not indexed"
                                  // or if you move hosting to Cloudflare Pages free (20,000-file cap per site).
   FEATURED_PER_DAY: 5,
-  BATCH_SIZE: 10,                // words per Gemini call
+  BATCH_SIZE: 5,                 // words per Gemini call (small batches finish well inside Google's 6-minute limit)
   SUGGEST_WHEN_QUEUE_EMPTY: false, // true = when AP_Queue runs out, Gemini picks new words itself. false = stop making
                                    // new vault pages until you add words (lessons, quizzes and 5-a-day carry on).
   RUN_BUDGET_MS: 200000,         // stop starting new batches after ~3.3 min (Apps Script hard limit is 6 min)
+  JOB_LIMIT_MS: 330000,          // every job stops itself by 5.5 min, before Google's 6-minute kill
+  SAFE_CALL_MS: 150000,          // never start a Gemini call (or a retry wait) with less than 2.5 min left
   REVIEW_SHARE: 0.3,             // share of quiz words from 3–4 weeks ago
   QUIZ_DRAFT: 16, QUIZ_KEEP: 10, QUIZ_MIN: 5, // 10 go on the site, up to 6 spares become Vault Pass bonus questions
   // Free tier = no billing account linked to the API key. Google's free tier allows ~20 requests a day PER MODEL,
@@ -177,9 +179,11 @@ function testConnections() {
 
 /** Run by hand to test generation end to end: drafts and checks 3 words, publishes nothing. */
 function dryRunThreeWords() {
+  GEMINI_TRACE_ = [];
   const entries = draftBatch_(['laconic', 'obdurate', 'equivocate'], {});
-  checkBatch_(entries);
-  entries.forEach(e => Logger.log(e.word + ' → ' + (e.issues.length ? 'NEEDS_REVIEW: ' + e.issues.join(' | ') : 'APPROVED')));
+  localChecks_(entries);
+  entries.forEach(e => Logger.log(e.word + ' → ' + e.definition + (e.issues.length ? '  ISSUES: ' + e.issues.join(' | ') : '')));
+  Logger.log('Gemini calls: ' + GEMINI_TRACE_.join(', '));
   return entries;
 }
 
@@ -201,47 +205,60 @@ function nightlyRank() {
 // ============================== 1. WORD GENERATION (evening, buffered) ==============================
 function generateRun() {
   return runJob_('generateRun', () => {
-    const t0 = Date.now();
-    const rows = readRows_(CONFIG.SHEETS.WORDS);
-    const target = CONFIG.VAULT_PER_NIGHT + CONFIG.FEATURED_PER_DAY + 15;
-    let buffer = rows.filter(r => r.status === 'APPROVED').length;
-    if (buffer >= target) return null; // buffer full: quiet exit, no log noise
-    const existing = new Set(rows.map(r => String(r.word).toLowerCase()).concat(CONFIG.ALREADY_ON_SITE));
-    let made = 0, approved = 0;
-    while (buffer < target && Date.now() - t0 < CONFIG.RUN_BUDGET_MS) {
-      const featuredPicks = takeFromQueue_(CONFIG.SHEETS.FEATURED_QUEUE, CONFIG.BATCH_SIZE, existing);
-      const picks = featuredPicks.concat(takeFromQueue_(CONFIG.SHEETS.QUEUE, CONFIG.BATCH_SIZE - featuredPicks.length, existing));
-      if (picks.length < CONFIG.BATCH_SIZE && CONFIG.SUGGEST_WHEN_QUEUE_EMPTY) picks.push.apply(picks, suggestWords_(CONFIG.BATCH_SIZE - picks.length, existing));
-      if (!picks.length) {
-        if (!made) return `Word queue is empty: no new vault words tonight (buffer ${buffer}). Add words to ${CONFIG.SHEETS.QUEUE}.`;
-        break;
+    const msgs = [];
+    let made = 0, approved = 0, reviewed = 0;
+    try {
+      finishPendingPost_(msgs); // an exam post saved at 6 PM whose fact check didn't fit in that run
+      while (timeLeft_() > CONFIG.SAFE_CALL_MS) {
+        const rows = readRows_(CONFIG.SHEETS.WORDS);
+        // Step 1: words drafted in an earlier step but not yet reviewed → review them (2 Gemini calls)
+        const drafted = rows.filter(r => r.status === 'DRAFTED');
+        if (drafted.length) { const n = reviewDrafted_(drafted.slice(0, 10)); reviewed += drafted.slice(0, 10).length; approved += n; continue; }
+        // Step 2: buffer full → done
+        const target = CONFIG.VAULT_PER_NIGHT + CONFIG.FEATURED_PER_DAY + 15;
+        const buffer = rows.filter(r => r.status === 'APPROVED').length;
+        if (buffer >= target) { if (made || reviewed) msgs.push(`buffer full (${buffer}/${target})`); break; }
+        // Step 3: draft a small batch and SAVE it before anything else (1 Gemini call). Queue rows are removed only after saving.
+        const existing = new Set(rows.map(r => String(r.word).toLowerCase()).concat(CONFIG.ALREADY_ON_SITE));
+        const fq = peekQueue_(CONFIG.SHEETS.FEATURED_QUEUE, CONFIG.BATCH_SIZE, existing);
+        fq.words.forEach(w => existing.add(w));
+        const vq = peekQueue_(CONFIG.SHEETS.QUEUE, CONFIG.BATCH_SIZE - fq.words.length, existing);
+        const picks = fq.words.concat(vq.words);
+        if (picks.length < CONFIG.BATCH_SIZE && CONFIG.SUGGEST_WHEN_QUEUE_EMPTY) picks.push.apply(picks, suggestWords_(CONFIG.BATCH_SIZE - picks.length, existing));
+        if (!picks.length) { msgs.push(`Word queue is empty (buffer ${buffer}). Add words to ${CONFIG.SHEETS.QUEUE}.`); break; }
+        const wantFeatured = {}; fq.words.forEach(w => wantFeatured[w] = true);
+        const entries = draftBatch_(picks, wantFeatured);
+        localChecks_(entries);
+        entries.forEach(e => { e.status = 'DRAFTED'; e.issues = e.issues.join(' | '); e.created_at = new Date(); });
+        appendRows_(CONFIG.SHEETS.WORDS, COLS.WORDS, entries);
+        dropQueueRows_(CONFIG.SHEETS.FEATURED_QUEUE, fq.used);
+        dropQueueRows_(CONFIG.SHEETS.QUEUE, vq.used);
+        made += entries.length;
       }
-      picks.forEach(w => existing.add(w));
-      const wantFeatured = {}; featuredPicks.forEach(w => wantFeatured[w] = true);
-      let entries;
-      try {
-        entries = draftBatch_(picks, wantFeatured);
-        checkBatch_(entries);
-      } catch (err) {
-        if (!/FREE_LIMIT/.test(err.message)) throw err;
-        // Gemini's free daily limit: put the words back and stop quietly. Tomorrow continues. No charge is possible without billing.
-        const q = sheet_(featuredPicks.length ? CONFIG.SHEETS.FEATURED_QUEUE : CONFIG.SHEETS.QUEUE);
-        q.insertRowsBefore(2, picks.length);
-        q.getRange(2, 1, picks.length, 1).setValues(picks.map(w => [w]));
-        return `Gemini free limit reached after ${made} words (buffer ${buffer}/${target}). Continuing tomorrow.`;
-      }
-      entries.forEach(e => {
-        e.status = e.issues.length ? 'NEEDS_REVIEW' : 'APPROVED';
-        e.issues = e.issues.join(' | ');
-        e.created_at = new Date();
-        if (e.status === 'APPROVED') { buffer++; approved++; }
-        made++;
-      });
-      appendRows_(CONFIG.SHEETS.WORDS, COLS.WORDS, entries);
+    } catch (err) {
+      if (/TIME_UP/.test(err.message)) msgs.push('paused before the 6-minute limit; the next run continues');
+      else if (/FREE_LIMIT/.test(err.message)) msgs.push('Gemini free daily limit reached; continuing tomorrow');
+      else throw err;
     }
-    return `Drafted ${made}, approved ${approved}. Buffer ${buffer}/${target}.`;
+    if (!made && !reviewed && !msgs.length) return null; // nothing to do: quiet
+    return `Drafted ${made}, reviewed ${reviewed}, approved ${approved}. ${msgs.join('; ')}`;
   }, 'doc');
 }
+
+/** First n usable words at the top of a queue tab, without removing them yet. */
+function peekQueue_(sheetName, n, existing) {
+  const out = { words: [], used: 0 };
+  if (n <= 0) return out;
+  const sh = sheet_(sheetName), last = sh.getLastRow();
+  if (last < 2) return out;
+  const vals = sh.getRange(2, 1, Math.min(last - 1, n * 3), 1).getValues();
+  for (; out.used < vals.length && out.words.length < n; out.used++) {
+    const w = String(vals[out.used][0] || '').trim().toLowerCase();
+    if (w && /^[a-z][a-z' -]*$/.test(w) && !existing.has(w) && out.words.indexOf(w) < 0) out.words.push(w);
+  }
+  return out;
+}
+function dropQueueRows_(sheetName, used) { if (used > 0) sheet_(sheetName).deleteRows(2, used); }
 
 function takeFromQueue_(sheetName, n, existing) {
   if (n <= 0) return [];
@@ -302,10 +319,9 @@ Return JSON {"entries":[ one object per word, same order, with exactly these key
   });
 }
 
-/** Three gates per word. Any issue → NEEDS_REVIEW (never published until you approve it). */
-function checkBatch_(entries) {
+/** Gates 1–2 (no Gemini): shape and dictionary. Issues are saved with the draft. */
+function localChecks_(entries) {
   entries.forEach(e => shapeCheck_(e));
-  // Gate 2: dictionary API (parallel)
   try {
     const res = UrlFetchApp.fetchAll(entries.map(e => ({ url: 'https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(e.word), muteHttpExceptions: true })));
     res.forEach((r, i) => {
@@ -316,22 +332,41 @@ function checkBatch_(entries) {
       if (e.pos && pos.length && !pos.some(p => String(e.pos).toLowerCase().indexOf(p) >= 0)) e.issues.push(`part of speech "${e.pos}" not in dictionary (${pos.join('/')})`);
     });
   } catch (err) { log_('checkBatch', 'WARN', 'dictionary check skipped: ' + err.message); }
-  // Gate 3: strict reviewer + blind solver, one call each for the whole batch
-  const ok = entries.filter(e => e.definition);
-  if (!ok.length) return;
-  try {
-    const v = gemini_(`You are a strict reviewer for a test-prep vocabulary site. For each entry, list real factual errors only:
+}
+
+/** Gate 3: strict reviewer + blind solver on saved DRAFTED rows. Any issue → NEEDS_REVIEW (never published until you approve it). Returns how many were approved. */
+function reviewDrafted_(rows) {
+  const sh = sheet_(CONFIG.SHEETS.WORDS);
+  const issues = {}; rows.forEach(r => issues[r._row] = String(r.issues || '').split(' | ').filter(Boolean));
+  const ok = rows.filter(r => r.definition);
+  rows.filter(r => !r.definition).forEach(r => issues[r._row].push('no definition'));
+  if (ok.length) {
+    try {
+      const v = gemini_(`You are a strict reviewer for a test-prep vocabulary site. For each entry, list real factual errors only:
 wrong definition or part of speech, an example that misuses the word, a wrong synonym/antonym, invented or doubtful etymology,
 a mnemonic that teaches a false origin. Do not flag style.
 Entries: ${JSON.stringify(ok.map(e => ({ word: e.word, pos: e.pos, definition: e.definition, examples: safeJson_(e.examples, []), synonyms: e.synonyms, antonyms: e.antonyms, mnemonic: e.mnemonic, etymology: e.etymology })))}
 Return JSON {"results":[{"word": "...", "errors": ["short description"]}]} — errors empty when the entry is correct.`, 0);
-    const errs = {}; (v.results || []).forEach(x => errs[String(x.word).toLowerCase()] = x.errors || []);
-    ok.forEach(e => (errs[e.word] || []).forEach(x => e.issues.push('reviewer: ' + x)));
-    const s = gemini_(`Answer each question. Return JSON {"answers":[{"word": "<the id given>", "answer": <option index 0-3>}]}.
+      const errs = {}; (v.results || []).forEach(x => errs[String(x.word).toLowerCase()] = x.errors || []);
+      const s = gemini_(`Answer each question. Return JSON {"answers":[{"word": "<the id given>", "answer": <option index 0-3>}]}.
 ${ok.map(e => `id=${e.word}: ${e.mini_q_prompt}  Options: ${safeJson_(e.mini_q_options, []).map((o, i) => i + ') ' + o).join('  ')}`).join('\n')}`, 0);
-    const ans = {}; (s.answers || []).forEach(x => ans[String(x.word).toLowerCase()] = Number(x.answer));
-    ok.forEach(e => { if (ans[e.word] !== Number(e.mini_q_answer)) e.issues.push('blind solver disagreed on the mini question'); });
-  } catch (err) { ok.forEach(e => e.issues.push('review pass failed: ' + err.message)); }
+      const ans = {}; (s.answers || []).forEach(x => ans[String(x.word).toLowerCase()] = Number(x.answer));
+      ok.forEach(e => {
+        (errs[String(e.word).toLowerCase()] || []).forEach(x => issues[e._row].push('reviewer: ' + x));
+        if (ans[String(e.word).toLowerCase()] !== Number(e.mini_q_answer)) issues[e._row].push('blind solver disagreed on the mini question');
+      });
+    } catch (err) {
+      if (/TIME_UP|FREE_LIMIT/.test(err.message)) throw err; // stays DRAFTED; the next run reviews it
+      ok.forEach(e => issues[e._row].push('review pass failed: ' + err.message.slice(0, 150)));
+    }
+  }
+  let approved = 0;
+  rows.forEach(r => {
+    const st = issues[r._row].length ? 'NEEDS_REVIEW' : 'APPROVED';
+    if (st === 'APPROVED') approved++;
+    updateRow_(sh, r._row, COLS.WORDS, { status: st, issues: issues[r._row].join(' | ') });
+  });
+  return approved;
 }
 
 function shapeCheck_(e) {
@@ -350,45 +385,69 @@ function shapeCheck_(e) {
 // ============================== 2. EXAM FOCUS POST (18:00, for tomorrow) ==============================
 function generateExamPost() {
   return runJob_('generateExamPost', () => {
-    const exam = CONFIG.POST_DAY[dow_(1)];
-    const postDate = today_(1);
-    if (!exam) return 'Tomorrow is Sunday (quiz day): no post.';
-    if (readRows_(CONFIG.SHEETS.POSTS).some(p => fmtDate_(p.post_date) === postDate)) return 'Post for ' + postDate + ' already drafted.';
-    const prior = readRows_(CONFIG.SHEETS.POSTS).filter(p => p.exam === exam).length;
-    const topic = POST_TOPICS[exam][prior % POST_TOPICS[exam].length];
-    const words = weekWords_(postDate, exam).slice(0, 10);
-    const site = site_();
-    const r = gemini_(`Write a ${exam} vocabulary article for Indian students, about 900–1,100 words, in Markdown.
+    const msgs = [];
+    try {
+      if (finishPendingPost_(msgs)) return msgs.join('; ');
+      const exam = CONFIG.POST_DAY[dow_(1)];
+      const postDate = today_(1);
+      if (!exam) return 'Tomorrow is Sunday (quiz day): no post.';
+      if (readRows_(CONFIG.SHEETS.POSTS).some(p => fmtDate_(p.post_date) === postDate)) return 'Post for ' + postDate + ' already drafted.';
+      const prior = readRows_(CONFIG.SHEETS.POSTS).filter(p => p.exam === exam).length;
+      const topic = POST_TOPICS[exam][prior % POST_TOPICS[exam].length];
+      const words = weekWords_(postDate, exam).slice(0, 10);
+      const r = gemini_(`Write a ${exam} vocabulary article for Indian students, about 900–1,100 words, in Markdown.
 Topic: "${topic}".
-Use these words from this week's lessons, each at least once, and link the FIRST mention of each as [word](/words/slug):
-${words.map(w => `${w.word} (/words/${w.slug}) — ${w.definition}`).join('\n')}
+${words.length ? `Use these words from this week's lessons, each at least once, and link the FIRST mention of each as [word](/words/slug):
+${words.map(w => `${w.word} (/words/${w.slug}) — ${w.definition}`).join('\n')}` : 'Use 6–8 useful exam words naturally (no links).'}
 Structure: an opening paragraph that states the key idea; the explanation; 3 worked examples written in the ${exam}'s own question style,
-each followed by the answer and why; a short "This week's words in ${exam} context" section; a 5-minute daily practice routine;
+each followed by the answer and why; a short "Words to know for ${exam}" section; a 5-minute daily practice routine;
 a final line inviting readers to Sunday's ${exam} quiz at ${CONFIG.CHALLENGE_URL[exam]}.
 FACTS you may state about the exam (state no other format facts, numbers or dates): ${EXAM_FACTS[exam]}
 Plain, direct English. No hype, no score guarantees. Do not invent statistics.
 Return JSON {"title": "under 65 characters", "description": "under 155 characters", "slug": "url-slug", "body_md": "the article, starting with a ## heading, no H1"}`, 0.6);
-    const issues = [];
-    const body = String(r.body_md || '');
-    const wc = body.split(/\s+/).length;
-    if (wc < 700) issues.push('too short (' + wc + ' words)');
-    if (!r.title) issues.push('no title');
-    words.forEach(w => { if (body.indexOf('/words/' + w.slug) < 0) issues.push('missing link to ' + w.word); });
-    try {
-      const v = gemini_(`You check articles for a test-prep site. FACTS about ${exam}: ${EXAM_FACTS[exam]}
+      const issues = [];
+      const body = String(r.body_md || '');
+      const wc = body.split(/\s+/).length;
+      if (wc < 700) issues.push('too short (' + wc + ' words)');
+      if (!r.title) issues.push('no title');
+      words.forEach(w => { if (body.indexOf('/words/' + w.slug) < 0) issues.push('missing link to ' + w.word); });
+      // save first, so a slow fact check can never lose the article
+      appendRows_(CONFIG.SHEETS.POSTS, COLS.POSTS, [{
+        post_date: postDate, exam: exam, topic: topic, title: r.title || '', slug: slugify_(r.slug || r.title || topic),
+        description: r.description || '', words: words.map(w => w.word).join(', '), body_md: body.slice(0, 45000),
+        status: 'DRAFTED', issues: issues.join(' | '), created_at: new Date(),
+      }]);
+      msgs.push(`${exam} post for ${postDate} drafted — "${r.title}"`);
+      finishPendingPost_(msgs);
+    } catch (err) {
+      if (/TIME_UP/.test(err.message)) msgs.push('paused before the 6-minute limit; the 7 PM run finishes it');
+      else if (/FREE_LIMIT/.test(err.message)) msgs.push('Gemini free daily limit reached');
+      else throw err;
+    }
+    return msgs.join('; ');
+  });
+}
+
+/** Fact-checks any DRAFTED exam post (1 Gemini call). Returns true if it handled one. */
+function finishPendingPost_(msgs) {
+  const post = readRows_(CONFIG.SHEETS.POSTS).find(p => p.status === 'DRAFTED');
+  if (!post) return false;
+  const issues = String(post.issues || '').split(' | ').filter(Boolean);
+  try {
+    const v = gemini_(`You check articles for a test-prep site. FACTS about ${post.exam}: ${EXAM_FACTS[post.exam]}
 List real problems only: any claim about the exam's format, timing, scoring or question types that is not supported by FACTS;
 any word used with the wrong meaning; any worked example whose stated answer is wrong.
-Article: ${body}
+Article: ${post.body_md}
 Return JSON {"errors": ["short description"]}`, 0);
-      (v.errors || []).forEach(x => issues.push('reviewer: ' + x));
-    } catch (err) { issues.push('review failed: ' + err.message); }
-    appendRows_(CONFIG.SHEETS.POSTS, COLS.POSTS, [{
-      post_date: postDate, exam: exam, topic: topic, title: r.title || '', slug: slugify_(r.slug || r.title || topic),
-      description: r.description || '', words: words.map(w => w.word).join(', '), body_md: body.slice(0, 45000),
-      status: issues.length ? 'NEEDS_REVIEW' : 'APPROVED', issues: issues.join(' | '), created_at: new Date(),
-    }]);
-    return `${exam} post for ${postDate}: ${issues.length ? 'NEEDS_REVIEW (' + issues.length + ' issue(s))' : 'approved'} — "${r.title}"`;
-  });
+    (v.errors || []).forEach(x => issues.push('reviewer: ' + x));
+  } catch (err) {
+    if (/TIME_UP|FREE_LIMIT/.test(err.message)) throw err; // stays DRAFTED; the next run checks it
+    issues.push('review failed: ' + err.message.slice(0, 150));
+  }
+  const st = issues.length ? 'NEEDS_REVIEW' : 'APPROVED';
+  updateRow_(sheet_(CONFIG.SHEETS.POSTS), post._row, COLS.POSTS, { status: st, issues: issues.join(' | ') });
+  msgs.push(`${post.exam} post for ${fmtDate_(post.post_date)}: ${st}${issues.length ? ' (' + issues.length + ' issue(s))' : ''}`);
+  return true;
 }
 
 /** Featured words of the quiz week that `dateStr` belongs to, tagged for `exam` first, padded with other featured words. */
@@ -444,7 +503,7 @@ Return JSON {"answers":[{"q": <number>, "answer": [indices], "unique": true|fals
           if ((a.answer || []).map(Number).sort().join(',') !== (q.answer || []).map(Number).sort().join(',')) issues[k].push('blind solver disagreed');
           if (a.unique === false) issues[k].push('more than one defensible answer');
         });
-      } catch (err) { qs.forEach((q, k) => issues[k].push('solver failed: ' + err.message)); }
+      } catch (err) { if (/TIME_UP|FREE_LIMIT/.test(err.message)) throw err; qs.forEach((q, k) => issues[k].push('solver failed: ' + err.message)); }
       let kept = 0;
       const rows = qs.map((q, k) => {
         const status = issues[k].length ? 'REJECTED' : (kept < CONFIG.QUIZ_KEEP ? (kept++, 'APPROVED') : 'BONUS');
@@ -866,6 +925,9 @@ function packsFolder_() {
 }
 
 // ============================== HTTP HELPERS ==============================
+let JOB_DEADLINE_ = 0, GEMINI_TRACE_ = [];
+/** ms left before this job must stop (Google kills any run at 6 min). */
+function timeLeft_() { return JOB_DEADLINE_ ? JOB_DEADLINE_ - Date.now() : 1e9; }
 /** Models skipped until Google's reset time, e.g. {"gemini-3.8-flash": 1794400000000}. */
 function geminiSpent_() { return safeJson_(props_().getProperty('GEMINI_SPENT'), {}) || {}; }
 function markSpent_(model, untilMs) { const m = geminiSpent_(); m[model] = untilMs; props_().setProperty('GEMINI_SPENT', JSON.stringify(m)); }
@@ -884,7 +946,7 @@ function gemini_(prompt, temperature, light) {
       lastErr = err;
       if (/MODEL_GONE/.test(err.message)) { gone.push(model); props_().setProperty('GEMINI_GONE', JSON.stringify(gone)); log_('gemini', 'WARN', model + ' retired by Google; using the next model.'); continue; }
       if (/FREE_LIMIT/.test(err.message)) { markSpent_(model, now + retryMs_(err.message)); continue; }
-      if (/HTTP 5\d\d/.test(err.message)) continue; // overloaded: next model for this request
+      if (/HTTP (5\d\d|429)/.test(err.message)) continue; // overloaded or per-minute limit: next model for this request
       throw err;
     }
   }
@@ -900,11 +962,17 @@ function retryMs_(msg) {
 
 function geminiCall_(model, prompt, temperature) {
   const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
-  const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: temperature, responseMimeType: 'application/json' } };
+  const noThink = safeJson_(props_().getProperty('GEMINI_NO_THINKCFG'), []) || [];
+  const gen = { temperature: temperature, responseMimeType: 'application/json' };
+  // Gemini 3 models "think" before answering by default, which can take minutes. Low thinking keeps each call short.
+  if (/^gemini-3/.test(model) && noThink.indexOf(model) < 0) gen.thinkingConfig = { thinkingLevel: 'low' };
   let last = '';
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = UrlFetchApp.fetch(url, { method: 'post', contentType: 'application/json', payload: JSON.stringify(payload), muteHttpExceptions: true, headers: { 'x-goog-api-key': prop_('GEMINI_API_KEY') } });
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    if (timeLeft_() < CONFIG.SAFE_CALL_MS) throw new Error('TIME_UP before calling ' + model);
+    const t = Date.now();
+    const res = UrlFetchApp.fetch(url, { method: 'post', contentType: 'application/json', payload: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: gen }), muteHttpExceptions: true, headers: { 'x-goog-api-key': prop_('GEMINI_API_KEY') } });
     const code = res.getResponseCode();
+    GEMINI_TRACE_.push(model.replace('gemini-', '') + ' ' + code + ' ' + Math.round((Date.now() - t) / 1000) + 's');
     if (code === 200) {
       const data = JSON.parse(res.getContentText());
       const parts = ((((data.candidates || [])[0] || {}).content || {}).parts) || [];
@@ -912,6 +980,8 @@ function geminiCall_(model, prompt, temperature) {
       const parsed = safeJson_(text.replace(/^\s*```(?:json)?/, '').replace(/```\s*$/, '').trim(), null);
       if (parsed) return parsed;
       last = 'reply was not JSON: ' + (text || JSON.stringify(data).slice(0, 300)).slice(0, 300);
+    } else if (code === 400 && gen.thinkingConfig && /think/i.test(res.getContentText())) {
+      delete gen.thinkingConfig; noThink.push(model); props_().setProperty('GEMINI_NO_THINKCFG', JSON.stringify(noThink)); attempt--; continue;
     } else if (code === 404) {
       throw new Error('MODEL_GONE ' + model + ': ' + res.getContentText().slice(0, 160));
     } else if (code === 429 && /per.?day|PerDay|daily/i.test(res.getContentText())) {
@@ -920,10 +990,24 @@ function geminiCall_(model, prompt, temperature) {
       throw new Error('Gemini ' + code + ': ' + res.getContentText().slice(0, 200));
     }
     if (code !== 200) last = 'HTTP ' + code + ': ' + res.getContentText().slice(0, 300);
-    Utilities.sleep((code === 429 ? 20000 : code >= 500 ? 8000 : 3000) * attempt); // rate limit / overload: wait and retry
+    const wait = code === 429 ? 15000 : code >= 500 ? 5000 : 2000;
+    if (attempt < 2 && timeLeft_() - wait > CONFIG.SAFE_CALL_MS) Utilities.sleep(wait); else break; // never wait into the 6-minute limit
   }
-  throw new Error('Gemini (' + model + ') gave no usable answer after 3 tries. Last: ' + last);
+  throw new Error('Gemini (' + model + ') gave no usable answer. Last: ' + last);
 }
+
+/** One-off: puts back the 50 featured words lost on the night of 11 Nov (runs were killed after taking them off the queue). */
+function restoreLostFeatured() {
+  const lost = ['aberrant','abstruse','acquiesce','alacrity','alleviate','amenable','anomaly','apathy','articulate','audacious','banal','benevolent','capricious','caustic','condone','dissemble','dogmatic','elicit','enigmatic','erudite','exculpate','exemplary','fervent','flout','hyperbole','implacable','indolent','intransigent','irascible','lethargic','mitigate','mundane','naive','ostentatious','pedantic','pernicious','proliferate','propensity','prosaic','quiescent','recalcitrant','redundant','refute','replete','soporific','sporadic','superfluous','vindicate','wary','zealous'];
+  const sh = sheet_(CONFIG.SHEETS.FEATURED_QUEUE);
+  const have = new Set((sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues() : []).map(v => String(v[0]).toLowerCase())
+    .concat(readRows_(CONFIG.SHEETS.WORDS).map(r => String(r.word).toLowerCase())));
+  const add = lost.filter(w => !have.has(w));
+  if (add.length) { sh.insertRowsBefore(2, add.length); sh.getRange(2, 1, add.length, 1).setValues(add.map(w => [w])); }
+  log_('restore', 'INFO', 'Put back ' + add.length + ' featured words at the top of ' + CONFIG.SHEETS.FEATURED_QUEUE + '.');
+  return add.length;
+}
+
 function github_(method, path, body) {
   const res = UrlFetchApp.fetch('https://api.github.com' + path, { method: method.toLowerCase(), muteHttpExceptions: true, contentType: 'application/json',
     payload: body ? JSON.stringify(body) : undefined,
@@ -949,9 +1033,12 @@ function razorpay_(path) {
 function runJob_(name, fn, lockKind) {
   const lock = lockKind === 'doc' ? LockService.getDocumentLock() : LockService.getScriptLock();
   if (!lock.tryLock(lockKind === 'doc' ? 1000 : 240000)) { if (lockKind !== 'doc') log_(name, 'WARN', 'Another job was still running; skipped this run.'); return; }
-  try { const msg = fn(); if (msg) log_(name, 'INFO', msg); return msg; }
+  JOB_DEADLINE_ = Date.now() + CONFIG.JOB_LIMIT_MS; GEMINI_TRACE_ = [];
+  try { let msg = fn(); if (msg && GEMINI_TRACE_.length) msg += ' [Gemini: ' + GEMINI_TRACE_.join(', ') + ']'; if (msg) log_(name, 'INFO', msg); return msg; }
   catch (err) {
-    log_(name, 'ERROR', err.message);
+    if (/TIME_UP/.test(err.message)) { log_(name, 'INFO', 'Paused before the 6-minute limit; the next run continues. [Gemini: ' + GEMINI_TRACE_.join(', ') + ']'); return; }
+    if (/FREE_LIMIT/.test(err.message)) { log_(name, 'WARN', 'Gemini free daily limit reached; continuing after the reset. [Gemini: ' + GEMINI_TRACE_.join(', ') + ']'); return; }
+    log_(name, 'ERROR', err.message + (GEMINI_TRACE_.length ? ' [Gemini: ' + GEMINI_TRACE_.join(', ') + ']' : ''));
     const k = 'ERRMAIL_' + name + '_' + today_(); // at most one alert email per job per day; the morning report lists the rest
     if (!props_().getProperty(k)) { try { MailApp.sendEmail(prop_('OWNER_EMAIL'), 'VerbalVault autopilot error: ' + name, err.stack || err.message); props_().setProperty(k, '1'); } catch (e) { /* ignore */ } }
   } finally { lock.releaseLock(); }
