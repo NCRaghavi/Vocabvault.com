@@ -997,13 +997,23 @@ function geminiCall_(model, prompt, temperature) {
   throw new Error('Gemini (' + model + ') gave no usable answer. Last: ' + last);
 }
 
+/** Shuffles AP_FeaturedQueue only (AP_Queue keeps its importance ranking). */
+function shuffleFeaturedQueue() {
+  const sh = sheet_(CONFIG.SHEETS.FEATURED_QUEUE), n = sh.getLastRow() - 1;
+  if (n < 2) return 0;
+  sh.getRange(2, 1, n, 1).setValues(shuffle_(sh.getRange(2, 1, n, 1).getValues()));
+  log_('shuffle', 'INFO', 'Shuffled ' + n + ' words in ' + CONFIG.SHEETS.FEATURED_QUEUE + '.');
+  return n;
+}
+function shuffle_(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
 /** One-off: puts back the 50 featured words lost on the night of 11 Nov (runs were killed after taking them off the queue). */
 function restoreLostFeatured() {
   const lost = ['aberrant','abstruse','acquiesce','alacrity','alleviate','amenable','anomaly','apathy','articulate','audacious','banal','benevolent','capricious','caustic','condone','dissemble','dogmatic','elicit','enigmatic','erudite','exculpate','exemplary','fervent','flout','hyperbole','implacable','indolent','intransigent','irascible','lethargic','mitigate','mundane','naive','ostentatious','pedantic','pernicious','proliferate','propensity','prosaic','quiescent','recalcitrant','redundant','refute','replete','soporific','sporadic','superfluous','vindicate','wary','zealous'];
   const sh = sheet_(CONFIG.SHEETS.FEATURED_QUEUE);
   const have = new Set((sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues() : []).map(v => String(v[0]).toLowerCase())
     .concat(readRows_(CONFIG.SHEETS.WORDS).map(r => String(r.word).toLowerCase())));
-  const add = lost.filter(w => !have.has(w));
+  const add = shuffle_(lost.filter(w => !have.has(w)));
   if (add.length) { sh.insertRowsBefore(2, add.length); sh.getRange(2, 1, add.length, 1).setValues(add.map(w => [w])); }
   log_('restore', 'INFO', 'Put back ' + add.length + ' featured words at the top of ' + CONFIG.SHEETS.FEATURED_QUEUE + '.');
   return add.length;
