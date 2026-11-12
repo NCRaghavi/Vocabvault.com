@@ -1,30 +1,47 @@
 {
   "examId": "sat",
-  "examTitle": "Digital SAT Verbal Sprint Challenge",
-  "subtitle": "High-Yield Words in Context for the Digital SAT Reading and Writing Section.",
+  "examTitle": "Sunday SAT Quiz",
+  "subtitle": "2 questions in real SAT format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 35,
   "passingScorePercentage": 70,
   "instructions": [
-    "Digital SAT Format: 35 seconds per item.",
-    "Words in Context: Select the term that best maintains text cohesion and tone.",
-    "Direct rationale provided after test completion."
+    "You have 35 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {
       "id": 1,
       "type": "Words in Context",
       "prompt": "Critics noted that performing a 1920s jazz opera with actors clad in 21st-century cybernetic suits was intentionally ________, designed to bridge past and future aesthetics.",
-      "options": ["anachronistic", "pragmatic", "lucid", "ephemeral"],
+      "options": [
+        "anachronistic",
+        "pragmatic",
+        "lucid",
+        "ephemeral"
+      ],
       "correctIndex": 0,
-      "explanation": "'Anachronistic' means chronologically misplaced or belonging to a different era."
+      "explanation": "'Anachronistic' means chronologically misplaced or belonging to a different era.",
+      "label": "Words in Context",
+      "words": [
+        "anachronistic"
+      ]
     },
     {
       "id": 2,
       "type": "Words in Context",
       "prompt": "The bloom of the rare night-flowering cereus is famously ________; it opens for a single evening and withers by dawn.",
-      "options": ["ephemeral", "ubiquitous", "immutable", "perennial"],
+      "options": [
+        "ephemeral",
+        "ubiquitous",
+        "immutable",
+        "perennial"
+      ],
       "correctIndex": 0,
-      "explanation": "'Ephemeral' denotes lasting for a very brief duration or fleeting existence."
+      "explanation": "'Ephemeral' denotes lasting for a very brief duration or fleeting existence.",
+      "label": "Words in Context",
+      "words": [
+        "ephemeral"
+      ]
     }
   ]
 }

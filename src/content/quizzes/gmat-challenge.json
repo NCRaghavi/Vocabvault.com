@@ -1,13 +1,12 @@
 {
   "examId": "gmat",
-  "examTitle": "GMAT Focus Verbal Reasoning Challenge",
-  "subtitle": "Computer-Based Testing simulation for GMAT Critical Reasoning and Reading Comprehension vocabulary.",
+  "examTitle": "Sunday GMAT Quiz",
+  "subtitle": "5 questions in real GMAT format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 45,
   "passingScorePercentage": 70,
   "instructions": [
-    "GMAT Focus Format: 45 seconds per question.",
-    "Critical Reasoning Focus: Analyze lexical precision, premise assumptions, and argument validity.",
-    "Select the single best answer that completes the argument or clarifies the logical flaw."
+    "You have 45 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {
@@ -22,7 +21,11 @@
         "esoteric"
       ],
       "correctIndex": 1,
-      "explanation": "'Fallacious' means based on a mistaken belief or unsound reasoning. Since the model relied on an unproven and implausible hypothesis, describing it as 'fallacious' correctly captures the logical vulnerability in the argument."
+      "explanation": "'Fallacious' means based on a mistaken belief or unsound reasoning. Since the model relied on an unproven and implausible hypothesis, describing it as 'fallacious' correctly captures the logical vulnerability in the argument.",
+      "label": "Critical Reasoning - Assumption",
+      "words": [
+        "fallacious"
+      ]
     },
     {
       "id": 2,
@@ -36,7 +39,8 @@
         "esoteric"
       ],
       "correctIndex": 0,
-      "explanation": "'Tacit' means understood or implied without being stated directly. Accepting modified terms and payments over three quarters without protest represents implied or tacit agreement."
+      "explanation": "'Tacit' means understood or implied without being stated directly. Accepting modified terms and payments over three quarters without protest represents implied or tacit agreement.",
+      "label": "Critical Reasoning - Inference"
     },
     {
       "id": 3,
@@ -50,7 +54,11 @@
         "transitory"
       ],
       "correctIndex": 1,
-      "explanation": "'Pragmatic' means dealing with situations realistically and practically based on real-world outcomes rather than theoretical dogma, which directly matches basing decisions on 'verifiable operating margins'."
+      "explanation": "'Pragmatic' means dealing with situations realistically and practically based on real-world outcomes rather than theoretical dogma, which directly matches basing decisions on 'verifiable operating margins'.",
+      "label": "Reading Comprehension - Tone",
+      "words": [
+        "pragmatic"
+      ]
     },
     {
       "id": 4,
@@ -64,7 +72,11 @@
         "attenuate"
       ],
       "correctIndex": 0,
-      "explanation": "'Substantiate' means to provide evidence to support or prove the truth of a claim. Discretionary spending data was used to substantiate (support) the analysts' thesis."
+      "explanation": "'Substantiate' means to provide evidence to support or prove the truth of a claim. Discretionary spending data was used to substantiate (support) the analysts' thesis.",
+      "label": "Critical Reasoning - Strengthen/Weaken",
+      "words": [
+        "substantiate"
+      ]
     },
     {
       "id": 5,
@@ -78,7 +90,8 @@
         "ubiquitous"
       ],
       "correctIndex": 2,
-      "explanation": "'Equivocal' means open to more than one interpretation or deliberately ambiguous, matching the auditor's observation of language that could be read in two contradictory ways."
+      "explanation": "'Equivocal' means open to more than one interpretation or deliberately ambiguous, matching the auditor's observation of language that could be read in two contradictory ways.",
+      "label": "Critical Reasoning - Flaw in Argument"
     }
   ]
 }

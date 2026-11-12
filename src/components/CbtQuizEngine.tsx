@@ -1,458 +1,364 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { QuizData } from "@/lib/content";
-import {
-  Clock,
-  Award,
-  RotateCcw,
-  CheckCircle2,
-  XCircle,
-  HelpCircle,
-  Play,
-  ArrowRight,
-  ShieldCheck,
-  Zap
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import type { QuizData, QuizQuestion } from "@/lib/content";
+import { SITE } from "@/config/site";
+import { addMyWords, toSlug } from "@/lib/myWords";
+import { Clock, RotateCcw, HelpCircle, Play, Zap, Lock, Send, ListChecks } from "lucide-react";
 
 interface CbtQuizEngineProps {
   quizData: QuizData;
 }
 
+type Phase = "start" | "active" | "done";
+const UNLOCK_KEY = "vvp_unlocked";
+const LETTERS = "ABCDEF";
+
+const answersOf = (q: QuizQuestion): number[] =>
+  Array.isArray(q.correctIndices) && q.correctIndices.length ? q.correctIndices.map(Number) : [Number(q.correctIndex)];
+const sameSet = (a: number[], b: number[]) => a.length === b.length && [...a].sort().join(",") === [...b].sort().join(",");
+const fmt = (s: number) => `${String(Math.floor(Math.max(0, s) / 60)).padStart(2, "0")}:${String(Math.max(0, s) % 60).padStart(2, "0")}`;
+const examName = (id: string) => id.toUpperCase();
+
+function readUnlocked(): boolean {
+  try {
+    return window.localStorage.getItem(UNLOCK_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export async function postSubscribe(payload: Record<string, string>) {
+  if (!SITE.subscribeUrl) return;
+  try {
+    // Apps Script web apps don't send CORS headers: no-cors + text/plain is the reliable way to post.
+    await fetch(SITE.subscribeUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+  } catch {
+    /* never block the student on a network hiccup */
+  }
+}
+
 export default function CbtQuizEngine({ quizData }: CbtQuizEngineProps) {
-  // Store quiz state to support both React hydration and custom Vanilla JS manipulation
-  const [isClient, setIsClient] = useState(false);
+  const questions = quizData.questions;
+  const secs = quizData.timePerQuestionSeconds || 45;
+  const exam = examName(quizData.examId);
 
+  const [phase, setPhase] = useState<Phase>("start");
+  const [index, setIndex] = useState(0);
+  const [picks, setPicks] = useState<number[][]>([]);
+  const [left, setLeft] = useState(secs);
+  const [unlocked, setUnlocked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [msg, setMsg] = useState("");
+  const [sending, setSending] = useState(false);
+  const picksRef = useRef<number[][]>([]);
+  const [savedCount, setSavedCount] = useState(0);
+
+  useEffect(() => setUnlocked(readUnlocked()), []);
+
+  // Keep the question in view when the quiz starts, moves on, or finishes (important on phones).
+  const cardRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    setIsClient(true);
+    if (phase === "start") return;
+    const el = cardRef.current;
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [phase, index]);
 
-    // Initialize Custom Vanilla JavaScript Quiz Engine binding to DOM IDs
-    const startScreen = document.getElementById("quiz-start-screen");
-    const activeScreen = document.getElementById("quiz-active-screen");
-    const summaryScreen = document.getElementById("quiz-summary-screen");
-    const timerElement = document.getElementById("quiz-timer");
-    const questionCounter = document.getElementById("question-counter");
-    const questionText = document.getElementById("question-text");
-    const optionsContainer = document.getElementById("options-container");
-    const nextBtn = document.getElementById("next-btn") as HTMLButtonElement | null;
-    const startBtn = document.getElementById("start-btn") as HTMLButtonElement | null;
-    const restartBtn = document.getElementById("restart-btn") as HTMLButtonElement | null;
-    const scoreDisplay = document.getElementById("score-display");
-    const reviewContainer = document.getElementById("review-container");
+  const advance = useCallback(() => {
+    setIndex((i) => {
+      if (i < questions.length - 1) {
+        setLeft(secs);
+        return i + 1;
+      }
+      setPhase("done");
+      return i;
+    });
+  }, [questions.length, secs]);
 
-    if (!startScreen || !activeScreen || !summaryScreen || !timerElement || !questionCounter) {
+  // Countdown: one tick a second; auto-advance when time runs out.
+  useEffect(() => {
+    if (phase !== "active") return;
+    if (left <= 0) {
+      advance();
       return;
     }
+    const t = setTimeout(() => setLeft((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [phase, left, advance]);
 
-    let currentIndex = 0;
-    let selectedOption: number | null = null;
-    let score = 0;
-    let timerInterval: any = null;
-    let timeLeft = quizData.timePerQuestionSeconds || 45;
-    const userAnswers: { selected: number | null; correct: boolean; timeUsed: number }[] = [];
+  const start = () => {
+    picksRef.current = questions.map(() => []);
+    setPicks(picksRef.current);
+    setIndex(0);
+    setLeft(secs);
+    setPhase("active");
+  };
 
-    function stopTimer() {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
+  const toggle = (k: number) => {
+    const need = answersOf(questions[index]).length;
+    const cur = [...(picksRef.current[index] || [])];
+    const at = cur.indexOf(k);
+    if (at >= 0) cur.splice(at, 1);
+    else if (need === 1) cur.splice(0, cur.length, k);
+    else if (cur.length < need) cur.push(k);
+    else {
+      cur.shift();
+      cur.push(k);
     }
+    picksRef.current = picksRef.current.map((p, i) => (i === index ? cur : p));
+    setPicks(picksRef.current);
+  };
 
-    function startTimer() {
-      stopTimer();
-      timeLeft = quizData.timePerQuestionSeconds || 45;
-      updateTimerUI();
+  const results = questions.map((q, i) => sameSet(picks[i] || [], answersOf(q)));
 
-      timerInterval = setInterval(() => {
-        timeLeft -= 1;
-        updateTimerUI();
+  // When a quiz ends, put every missed word on the student's "My words" list.
+  useEffect(() => {
+    if (phase !== "done") return;
+    const missed = questions
+      .filter((q, i) => !sameSet(picksRef.current[i] || [], answersOf(q)))
+      .flatMap((q) => (q.words || []).slice(0, 1))
+      .map((w) => ({ word: w.charAt(0).toUpperCase() + w.slice(1), slug: toSlug(w), reason: "missed" as const, exam }));
+    setSavedCount(addMyWords(missed));
+  }, [phase, questions, exam]);
+  const score = results.filter(Boolean).length;
+  const pct = questions.length ? Math.round((score / questions.length) * 100) : 0;
 
-        if (timeLeft <= 0) {
-          stopTimer();
-          // Auto advance on timeout
-          handleAnswer(-1); // -1 means timed out
-          setTimeout(() => {
-            advanceQuestion();
-          }, 800);
-        }
-      }, 1000);
+  const unlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const v = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+      setMsg("Please enter a valid email.");
+      return;
     }
-
-    function updateTimerUI() {
-      if (!timerElement) return;
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      const formatted = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-      
-      timerElement.textContent = formatted;
-
-      if (timeLeft <= 10) {
-        timerElement.className = "font-mono text-xl font-bold text-rose-600 animate-pulse";
-      } else {
-        timerElement.className = "font-mono text-xl font-bold text-blue-700";
-      }
+    setSending(true);
+    await postSubscribe({ type: "subscribe", email: v, exam, score: `${score}/${questions.length}`, source: `quiz-${quizData.week || ""}` });
+    try {
+      window.localStorage.setItem(UNLOCK_KEY, "1");
+    } catch {
+      /* private mode: unlock for this visit only */
     }
+    setUnlocked(true);
+    setSending(false);
+  };
 
-    function renderQuestion(index: number) {
-      const q = quizData.questions[index];
-      selectedOption = null;
-
-      if (questionCounter) {
-        questionCounter.innerHTML = `Question <span class="font-bold text-slate-900">${index + 1}</span> of <span class="font-bold text-slate-900">${quizData.questions.length}</span>`;
-      }
-
-      if (questionText) {
-        questionText.textContent = q.prompt;
-      }
-
-      if (optionsContainer) {
-        optionsContainer.innerHTML = "";
-        q.options.forEach((opt, optIndex) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className =
-            "w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-blue-300 transition-all flex items-center justify-between group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20";
-          btn.setAttribute("data-option-index", String(optIndex));
-
-          const letter = String.fromCharCode(65 + optIndex);
-          btn.innerHTML = `
-            <div class="flex items-center gap-3">
-              <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-blue-100 text-slate-700 group-hover:text-blue-700 flex items-center justify-center font-mono font-bold text-xs transition-colors">
-                ${letter}
-              </span>
-              <span class="text-sm sm:text-base font-medium text-slate-800">${opt}</span>
-            </div>
-            <div class="w-4 h-4 rounded-full border border-slate-300 group-hover:border-blue-400 transition-colors"></div>
-          `;
-
-          btn.addEventListener("click", () => {
-            handleAnswer(optIndex);
-          });
-
-          optionsContainer.appendChild(btn);
-        });
-      }
-
-      if (nextBtn) {
-        nextBtn.disabled = true;
-        nextBtn.className =
-          "px-6 py-3 rounded-xl bg-slate-200 text-slate-400 font-bold text-sm cursor-not-allowed transition-all";
-        nextBtn.textContent = index === quizData.questions.length - 1 ? "Submit & View Results" : "Next Question →";
-      }
-
-      startTimer();
-    }
-
-    function handleAnswer(optIndex: number) {
-      selectedOption = optIndex;
-      const q = quizData.questions[currentIndex];
-
-      if (optionsContainer) {
-        const optionButtons = optionsContainer.querySelectorAll("button");
-        optionButtons.forEach((b, idx) => {
-          if (idx === optIndex) {
-            b.className =
-              "w-full text-left p-4 rounded-xl border-2 border-blue-600 bg-blue-50/70 shadow-sm flex items-center justify-between";
-            const radio = b.querySelector("div:last-child");
-            if (radio) {
-              radio.className = "w-4 h-4 rounded-full bg-blue-600 ring-2 ring-blue-200";
-            }
-          } else {
-            b.className =
-              "w-full text-left p-4 rounded-xl border border-slate-200 bg-white opacity-60 flex items-center justify-between";
-          }
-        });
-      }
-
-      if (nextBtn) {
-        nextBtn.disabled = false;
-        nextBtn.className =
-          "px-6 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-sm transition-all shadow-md active:scale-95 cursor-pointer";
-      }
-    }
-
-    function advanceQuestion() {
-      stopTimer();
-      const q = quizData.questions[currentIndex];
-      const isCorrect = selectedOption === q.correctIndex;
-      if (isCorrect) score += 1;
-
-      userAnswers.push({
-        selected: selectedOption,
-        correct: isCorrect,
-        timeUsed: (quizData.timePerQuestionSeconds || 45) - timeLeft,
-      });
-
-      if (currentIndex < quizData.questions.length - 1) {
-        currentIndex += 1;
-        renderQuestion(currentIndex);
-      } else {
-        showFinalSummary();
-      }
-    }
-
-    function showFinalSummary() {
-      stopTimer();
-      if (activeScreen) activeScreen.style.display = "none";
-      if (summaryScreen) summaryScreen.style.display = "block";
-
-      const total = quizData.questions.length;
-      const pct = Math.round((score / total) * 100);
-      const passed = pct >= quizData.passingScorePercentage;
-
-      if (scoreDisplay) {
-        scoreDisplay.innerHTML = `
-          <div class="text-center py-4">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full ${
-              passed ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
-            } mb-4">
-              <span class="text-2xl font-extrabold font-mono">${pct}%</span>
-            </div>
-            <h3 class="text-2xl font-extrabold text-slate-900">
-              ${passed ? "CBT Diagnostic Passed!" : "Diagnostic Complete — Review Recommended"}
-            </h3>
-            <p class="text-sm text-slate-600 mt-1">
-              You scored <span class="font-bold text-slate-900">${score}</span> out of <span class="font-bold text-slate-900">${total}</span> (${pct}%)
-            </p>
-            <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
-              passed ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-amber-50 text-amber-800 border border-amber-200"
-            }">
-              <span>${passed ? "Target Percentile: 85th - 99th" : "Focus on high-frequency root pairs"}</span>
-            </div>
-          </div>
-        `;
-      }
-
-      if (reviewContainer) {
-        reviewContainer.innerHTML = "";
-        quizData.questions.forEach((q, idx) => {
-          const userAns = userAnswers[idx];
-          const isCorrect = userAns ? userAns.correct : false;
-          const userChoiceText = userAns && userAns.selected !== null && userAns.selected >= 0 ? q.options[userAns.selected] : "Timed Out";
-          const correctText = q.options[q.correctIndex];
-
-          const itemDiv = document.createElement("div");
-          itemDiv.className = `p-5 rounded-2xl border ${
-            isCorrect ? "border-emerald-200 bg-emerald-50/40" : "border-rose-200 bg-rose-50/40"
-          } space-y-2 text-left`;
-
-          itemDiv.innerHTML = `
-            <div class="flex items-center justify-between text-xs font-mono">
-              <span class="font-bold text-slate-800">Item ${idx + 1} • ${q.type}</span>
-              <span class="font-bold ${isCorrect ? "text-emerald-700" : "text-rose-700"}">
-                ${isCorrect ? "✓ Correct (+100 pts)" : "✗ Incorrect"}
-              </span>
-            </div>
-            <p class="text-sm font-medium text-slate-900 leading-snug">${q.prompt}</p>
-            <div class="text-xs pt-1 space-y-1">
-              <p class="text-slate-600">Your choice: <span class="font-semibold ${isCorrect ? "text-emerald-800" : "text-rose-800"}">${userChoiceText}</span></p>
-              ${!isCorrect ? `<p class="text-slate-600">Correct answer: <span class="font-semibold text-emerald-800">${correctText}</span></p>` : ""}
-            </div>
-            <div class="mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 bg-white/70 p-3 rounded-xl leading-relaxed">
-              <strong class="text-slate-800">Lexical Rationale:</strong> ${q.explanation}
-            </div>
-          `;
-
-          reviewContainer.appendChild(itemDiv);
-        });
-      }
-    }
-
-    function startQuiz() {
-      currentIndex = 0;
-      score = 0;
-      userAnswers.length = 0;
-      if (startScreen) startScreen.style.display = "none";
-      if (summaryScreen) summaryScreen.style.display = "none";
-      if (activeScreen) activeScreen.style.display = "block";
-      renderQuestion(0);
-    }
-
-    function restartQuiz() {
-      if (summaryScreen) summaryScreen.style.display = "none";
-      if (activeScreen) activeScreen.style.display = "none";
-      if (startScreen) startScreen.style.display = "block";
-      stopTimer();
-    }
-
-    // Event Listeners
-    if (startBtn) {
-      startBtn.onclick = startQuiz;
-    }
-    if (nextBtn) {
-      nextBtn.onclick = advanceQuestion;
-    }
-    if (restartBtn) {
-      restartBtn.onclick = restartQuiz;
-    }
-
-    return () => {
-      stopTimer();
-    };
-  }, [quizData]);
+  const q = questions[index];
+  const need = q ? answersOf(q).length : 1;
+  const chosen = picks[index] || [];
 
   return (
     <div className="w-full">
-      {/* ========================================================
-          CENTERED CLEAN BORDERED UI CARD HOUSING THE QUIZ ENGINE
-          ======================================================== */}
-      <div
-        id="cbt-quiz-card"
-        className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-10 transition-all"
-      >
-        {/* ========================================================
-            PLACEHOLDER DIV 1: START SCREEN (id="quiz-start-screen")
-            ======================================================== */}
-        <div id="quiz-start-screen" className="space-y-6 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 mb-2 shadow-inner">
-            <Zap className="w-8 h-8" />
-          </div>
-
-          <div>
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-              Computer-Based Test Simulation
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">
-              {quizData.examTitle}
-            </h2>
-            <p className="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
-              {quizData.subtitle}
-            </p>
-          </div>
-
-          {/* Test Parameters */}
-          <div className="grid grid-cols-3 gap-3 py-4 border-y border-slate-100 text-center">
-            <div className="p-3 bg-slate-50 rounded-2xl">
-              <span className="text-xs font-mono text-slate-400 block">Questions</span>
-              <span className="text-lg font-bold text-slate-800">{quizData.questions.length}</span>
+      <div id="cbt-quiz-card" ref={cardRef} className="scroll-mt-24 max-w-2xl mx-auto bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-10 transition-all">
+        {phase === "start" && (
+          <div className="space-y-6 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 mb-2 shadow-inner">
+              <Zap className="w-8 h-8" />
             </div>
-            <div className="p-3 bg-slate-50 rounded-2xl">
-              <span className="text-xs font-mono text-slate-400 block">Per Question</span>
-              <span className="text-lg font-bold text-slate-800">{quizData.timePerQuestionSeconds}s</span>
+            <div>
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                {quizData.week ? `Week of ${quizData.week}` : "This week's quiz"}
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{quizData.examTitle}</h2>
+              <p className="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">{quizData.subtitle}</p>
             </div>
-            <div className="p-3 bg-slate-50 rounded-2xl">
-              <span className="text-xs font-mono text-slate-400 block">Pass Target</span>
-              <span className="text-lg font-bold text-emerald-600">{quizData.passingScorePercentage}%</span>
-            </div>
-          </div>
-
-          {/* Rules & Instructions */}
-          <div className="bg-slate-50 rounded-2xl p-4 text-left space-y-2 border border-slate-100 text-xs text-slate-600">
-            <div className="font-bold text-slate-800 flex items-center gap-1.5 uppercase font-mono">
-              <ShieldCheck className="w-4 h-4 text-blue-600" />
-              CBT Simulation Guidelines:
-            </div>
-            <ul className="list-disc pl-5 space-y-1">
-              {quizData.instructions.map((inst, idx) => (
-                <li key={idx}>{inst}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Start Button */}
-          <button
-            id="start-btn"
-            type="button"
-            className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-base shadow-lg shadow-blue-700/20 hover:shadow-blue-700/30 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
-          >
-            <Play className="w-5 h-5 fill-current" />
-            <span>Begin Master CBT Challenge</span>
-          </button>
-        </div>
-
-        {/* =========================================================================
-            PLACEHOLDER DIV 2: ACTIVE QUIZ SCREEN (id="quiz-active-screen")
-            Contains:
-            - Visible Countdown Timer (id="quiz-timer")
-            - Question Counter (id="question-counter")
-            - Question text and options container
-            ========================================================================= */}
-        <div id="quiz-active-screen" style={{ display: "none" }} className="space-y-6">
-          {/* Header Bar with Question Counter & Visible Countdown Timer */}
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-            {/* Question Counter Element */}
-            <div
-              id="question-counter"
-              className="text-xs sm:text-sm font-medium text-slate-500 font-mono"
-            >
-              Question 1 of {quizData.questions.length}
-            </div>
-
-            {/* Visible Countdown Timer Element */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200">
-              <Clock className="w-4 h-4 text-slate-500" />
-              <div id="quiz-timer" className="font-mono text-lg font-bold text-blue-700">
-                00:{String(quizData.timePerQuestionSeconds || 45).padStart(2, "0")}
+            <div className="grid grid-cols-3 gap-3 py-4 border-y border-slate-100 text-center">
+              <div className="p-3 bg-slate-50 rounded-2xl">
+                <span className="text-xs font-mono text-slate-400 block">Questions</span>
+                <span className="text-lg font-bold text-slate-800">{questions.length}</span>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-2xl">
+                <span className="text-xs font-mono text-slate-400 block">Per question</span>
+                <span className="text-lg font-bold text-slate-800">{secs}s</span>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-2xl">
+                <span className="text-xs font-mono text-slate-400 block">About</span>
+                <span className="text-lg font-bold text-slate-800">{Math.ceil((questions.length * secs) / 60)} min</span>
               </div>
             </div>
-          </div>
-
-          {/* Question Prompt Area */}
-          <div className="py-2">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 block mb-1">
-              Read carefully and select the best response:
-            </span>
-            <p
-              id="question-text"
-              className="text-base sm:text-lg font-medium text-slate-900 leading-relaxed font-serif"
-            >
-              Loading question...
-            </p>
-          </div>
-
-          {/* Dynamic Options Container */}
-          <div id="options-container" className="space-y-3">
-            {/* Populated dynamically by Custom JS Quiz Engine */}
-          </div>
-
-          {/* Navigation Controls */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-mono">
-              Auto-advances on timer expiry
-            </span>
+            {quizData.instructions?.length > 0 && (
+              <ul className="bg-slate-50 rounded-2xl p-4 text-left space-y-1 border border-slate-100 text-xs text-slate-600 list-disc pl-8">
+                {quizData.instructions.map((inst, i) => (
+                  <li key={i}>{inst}</li>
+                ))}
+              </ul>
+            )}
             <button
-              id="next-btn"
               type="button"
-              disabled
-              className="px-6 py-3 rounded-xl bg-slate-200 text-slate-400 font-bold text-sm cursor-not-allowed transition-all"
+              onClick={start}
+              className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-base shadow-lg shadow-blue-700/20 transition-all cursor-pointer"
             >
-              Next Question →
+              <Play className="w-5 h-5 fill-current" />
+              <span>Start the quiz</span>
             </button>
           </div>
-        </div>
+        )}
 
-        {/* =========================================================================
-            PLACEHOLDER DIV 3: FINAL SCORE SUMMARY SCREEN (id="quiz-summary-screen")
-            ========================================================================= */}
-        <div id="quiz-summary-screen" style={{ display: "none" }} className="space-y-6">
-          {/* Score Calculation & Performance Display */}
-          <div id="score-display">
-            {/* Populated dynamically by Custom JS Quiz Engine */}
-          </div>
-
-          {/* Question-by-Question Review with Explanations */}
-          <div>
-            <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <HelpCircle className="w-4 h-4 text-blue-600" />
-              Performance & Lexical Rationale Review
-            </h4>
-            <div id="review-container" className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
-              {/* Populated dynamically by Custom JS Quiz Engine */}
+        {phase === "active" && q && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="text-xs sm:text-sm font-medium text-slate-500 font-mono">
+                Question <span className="font-bold text-slate-900">{index + 1}</span> of <span className="font-bold text-slate-900">{questions.length}</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200">
+                <Clock className="w-4 h-4 text-slate-500" />
+                <div aria-live="polite" className={`font-mono text-lg font-bold ${left <= 10 ? "text-rose-600" : "text-blue-700"}`}>
+                  {fmt(left)}
+                </div>
+              </div>
+            </div>
+            <div className="h-1 bg-slate-100 rounded-full overflow-hidden -mt-3">
+              <div className="h-full bg-blue-600 transition-all" style={{ width: `${(index / questions.length) * 100}%` }} />
+            </div>
+            <div className="py-1">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 block mb-2">{q.label || q.type}</span>
+              <p className="text-base sm:text-lg font-medium text-slate-900 leading-relaxed font-serif whitespace-pre-line">{q.prompt}</p>
+              {need === 2 && <p className="mt-3 text-xs text-slate-500">Select exactly two answers that give the sentence the same meaning.</p>}
+            </div>
+            <div className="space-y-3">
+              {q.options.map((opt, k) => {
+                const on = chosen.includes(k);
+                return (
+                  <button
+                    key={k}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => toggle(k)}
+                    className={`w-full text-left p-4 rounded-xl flex items-center gap-3 transition-all cursor-pointer ${
+                      on ? "border-2 border-blue-600 bg-blue-50/70 shadow-sm" : "border border-slate-200 bg-white hover:bg-slate-50 hover:border-blue-300"
+                    }`}
+                  >
+                    <span className={`w-7 h-7 shrink-0 rounded-lg flex items-center justify-center font-mono font-bold text-xs ${on ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700"}`}>
+                      {LETTERS.charAt(k)}
+                    </span>
+                    <span className="text-sm sm:text-base font-medium text-slate-800">{opt}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-400 font-mono">Moves on when time runs out</span>
+              <button
+                type="button"
+                disabled={chosen.length !== need}
+                onClick={advance}
+                className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
+                  chosen.length === need ? "bg-blue-700 hover:bg-blue-800 text-white shadow-md cursor-pointer" : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                }`}
+              >
+                {index === questions.length - 1 ? "See my score" : "Next question →"}
+              </button>
             </div>
           </div>
+        )}
 
-          {/* Retake Challenge Button */}
-          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              id="restart-btn"
-              type="button"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition-all shadow-sm cursor-pointer"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Retake Diagnostic Challenge</span>
-            </button>
+        {phase === "done" && (
+          <div className="space-y-6">
+            <div className="text-center py-2">
+              <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 ${pct >= 70 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                <span className="text-2xl font-extrabold font-mono">{pct}%</span>
+              </div>
+              <h3 className="text-2xl font-extrabold text-slate-900">
+                {score} of {questions.length} correct
+              </h3>
+              <p className="text-sm text-slate-600 mt-1">
+                {pct >= 80 ? "Strong. These words are yours now." : pct >= 50 ? "Solid base. The misses below show exactly what to fix." : "Good that you found this now. Review the explanations, then try next Sunday's quiz."}
+              </p>
+            </div>
+
+            {savedCount > 0 && (
+              <Link href="/my-words" className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-slate-800 hover:border-amber-300">
+                <ListChecks className="w-5 h-5 text-amber-700 shrink-0" />
+                <span>
+                  Added {savedCount} missed word{savedCount === 1 ? "" : "s"} to <strong>My words</strong>, your revision list. Open it →
+                </span>
+              </Link>
+            )}
+
+            {!unlocked && (
+              <form onSubmit={unlock} className="rounded-2xl border border-blue-200 bg-blue-50 p-5 space-y-3">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <Lock className="w-4 h-4 text-blue-700" /> Unlock all {questions.length} explanations
+                </div>
+                <p className="text-sm text-slate-600">
+                  Enter your email to see why each answer is right. You&apos;ll also get next Sunday&apos;s {exam} quiz and the week&apos;s words, once a week. Unsubscribe in one click.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@email.com"
+                    aria-label="Email address"
+                    className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                  <button type="submit" disabled={sending} className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold px-5 py-3 text-sm cursor-pointer">
+                    <Send className="w-4 h-4" /> Show explanations
+                  </button>
+                </div>
+                {msg && <p className="text-xs text-rose-700">{msg}</p>}
+              </form>
+            )}
+
+            <div>
+              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-blue-600" /> Question by question
+              </h4>
+              <div className="space-y-3">
+                {questions.map((qq, i) => {
+                  const ok = results[i];
+                  const mine = picks[i] || [];
+                  const key = answersOf(qq);
+                  const word = qq.words?.[0];
+                  return (
+                    <div key={qq.id ?? i} className={`p-5 rounded-2xl border space-y-2 text-left ${ok ? "border-emerald-200 bg-emerald-50/40" : "border-rose-200 bg-rose-50/40"}`}>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="font-bold text-slate-800">
+                          Q{i + 1} · {qq.label || qq.type}
+                        </span>
+                        <span className={`font-bold ${ok ? "text-emerald-700" : "text-rose-700"}`}>{ok ? "✓ Correct" : "✗ Missed"}</span>
+                      </div>
+                      {word && (
+                        <p className="text-xs text-slate-600">
+                          Tests:{" "}
+                          <Link href={`/words/${toSlug(word)}`} className="font-semibold text-blue-700 hover:underline">
+                            {word}
+                          </Link>
+                          {!ok && " · revise it before next Sunday"}
+                        </p>
+                      )}
+                      <p className="text-sm font-medium text-slate-900 leading-snug whitespace-pre-line">{qq.prompt}</p>
+                      <div className={unlocked ? "" : "blur-sm select-none pointer-events-none"} aria-hidden={!unlocked}>
+                        <p className="text-xs text-slate-600">
+                          Your answer: <span className="font-semibold">{mine.length ? mine.map((m) => LETTERS.charAt(m)).join(" & ") : "no answer (time ran out)"}</span>
+                          {" · "}Correct: <span className="font-semibold text-emerald-800">{key.map((k) => `${LETTERS.charAt(k)}) ${qq.options[k]}`).join(" & ")}</span>
+                        </p>
+                        <div className="mt-2 text-xs text-slate-600 bg-white/70 p-3 rounded-xl leading-relaxed">
+                          {qq.explanation}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3 justify-center">
+              {SITE.vaultPassUrl && (
+                <a href={SITE.vaultPassUrl} className="inline-flex items-center justify-center py-3 px-6 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-sm">
+                  Get the {exam} revision PDF: Vault Pass ₹199
+                </a>
+              )}
+              {SITE.telegramUrl && (
+                <a href={SITE.telegramUrl} className="inline-flex items-center justify-center py-3 px-6 rounded-xl border border-slate-300 hover:bg-slate-50 font-bold text-sm text-slate-800">
+                  5 words a day on Telegram
+                </a>
+              )}
+              <button type="button" onClick={() => setPhase("start")} className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm cursor-pointer">
+                <RotateCcw className="w-4 h-4" /> Retake
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

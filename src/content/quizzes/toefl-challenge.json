@@ -1,13 +1,12 @@
 {
   "examId": "toefl",
-  "examTitle": "TOEFL iBT Academic Verbal Challenge",
-  "subtitle": "Computer-Based Assessment of Academic Reading Vocabulary in Context and Lexical Inferences.",
+  "examTitle": "Sunday TOEFL Quiz",
+  "subtitle": "5 questions in real TOEFL format. A new quiz on this week's words goes live every Sunday.",
   "timePerQuestionSeconds": 35,
   "passingScorePercentage": 75,
   "instructions": [
-    "TOEFL iBT Academic Reading Format: 35 seconds per item.",
-    "Lexical In Context: Determine the exact meaning of academic vocabulary as used in university-level texts.",
-    "Scoring benchmark: Target 26-30 on the TOEFL Reading section."
+    "You have 35 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
   "questions": [
     {
@@ -21,7 +20,11 @@
         "esoteric"
       ],
       "correctIndex": 1,
-      "explanation": "'Ubiquitous' means present everywhere simultaneously. The author explains that cyanobacteria were found in rock strata across 'all major continents', confirming their widespread presence."
+      "explanation": "'Ubiquitous' means present everywhere simultaneously. The author explains that cyanobacteria were found in rock strata across 'all major continents', confirming their widespread presence.",
+      "label": "Vocabulary in Context",
+      "words": [
+        "ubiquitous"
+      ]
     },
     {
       "id": 2,
@@ -34,7 +37,8 @@
         "widespread"
       ],
       "correctIndex": 0,
-      "explanation": "'Ephemeral' means lasting for a very short time; fleeting or transitory. Desert flowers withering within forty-eight hours are quintessential examples of short-lived phenomena."
+      "explanation": "'Ephemeral' means lasting for a very short time; fleeting or transitory. Desert flowers withering within forty-eight hours are quintessential examples of short-lived phenomena.",
+      "label": "Vocabulary in Context"
     },
     {
       "id": 3,
@@ -47,7 +51,11 @@
         "anachronistic"
       ],
       "correctIndex": 0,
-      "explanation": "'Lucid' means clearly expressed, easy to understand, and completely transparent, which explains why international students grasped the concept without difficulty."
+      "explanation": "'Lucid' means clearly expressed, easy to understand, and completely transparent, which explains why international students grasped the concept without difficulty.",
+      "label": "Textual Inference",
+      "words": [
+        "lucid"
+      ]
     },
     {
       "id": 4,
@@ -60,7 +68,11 @@
         "theoretical"
       ],
       "correctIndex": 1,
-      "explanation": "'Pragmatic' means practical and realistic, focused on immediate utility and tangible tools rather than abstract or perfectionist ideals."
+      "explanation": "'Pragmatic' means practical and realistic, focused on immediate utility and tangible tools rather than abstract or perfectionist ideals.",
+      "label": "Vocabulary in Context",
+      "words": [
+        "pragmatic"
+      ]
     },
     {
       "id": 5,
@@ -73,7 +85,11 @@
         "ubiquitous"
       ],
       "correctIndex": 0,
-      "explanation": "'Esoteric' refers to knowledge intended for or understood only by an enlightened inner circle of initiates, directly matching rituals previously shielded from outsiders."
+      "explanation": "'Esoteric' refers to knowledge intended for or understood only by an enlightened inner circle of initiates, directly matching rituals previously shielded from outsiders.",
+      "label": "Reference & Nuance",
+      "words": [
+        "esoteric"
+      ]
     }
   ]
 }
