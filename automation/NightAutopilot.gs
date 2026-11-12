@@ -946,7 +946,7 @@ function gemini_(prompt, temperature, light) {
       lastErr = err;
       if (/MODEL_GONE/.test(err.message)) { gone.push(model); props_().setProperty('GEMINI_GONE', JSON.stringify(gone)); log_('gemini', 'WARN', model + ' retired by Google; using the next model.'); continue; }
       if (/FREE_LIMIT/.test(err.message)) { markSpent_(model, now + retryMs_(err.message)); continue; }
-      if (/HTTP (5\d\d|429)/.test(err.message)) continue; // overloaded or per-minute limit: next model for this request
+      if (/HTTP (5\d\d|429)/.test(err.message)) { markSpent_(model, Date.now() + 30 * 60000); continue; } // overloaded: rest this model 30 min, use the next one
       throw err;
     }
   }
@@ -990,7 +990,8 @@ function geminiCall_(model, prompt, temperature) {
       throw new Error('Gemini ' + code + ': ' + res.getContentText().slice(0, 200));
     }
     if (code !== 200) last = 'HTTP ' + code + ': ' + res.getContentText().slice(0, 300);
-    const wait = code === 429 ? 15000 : code >= 500 ? 5000 : 2000;
+    if (code >= 500) break; // overloaded (these can hang for minutes): don't retry this model, move on
+    const wait = code === 429 ? 15000 : 2000;
     if (attempt < 2 && timeLeft_() - wait > CONFIG.SAFE_CALL_MS) Utilities.sleep(wait); else break; // never wait into the 6-minute limit
   }
   throw new Error('Gemini (' + model + ') gave no usable answer. Last: ' + last);
