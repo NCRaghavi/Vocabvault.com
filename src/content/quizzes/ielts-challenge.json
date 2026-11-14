@@ -1,63 +1,185 @@
 {
   "examId": "ielts",
   "examTitle": "Sunday IELTS Quiz",
-  "subtitle": "3 questions in real IELTS format. A new quiz on this week's words goes live every Sunday.",
+  "subtitle": "10 questions on this week's words, in real IELTS format. Older words from 3–4 weeks ago come back too.",
   "timePerQuestionSeconds": 40,
-  "passingScorePercentage": 75,
+  "passingScorePercentage": 70,
   "instructions": [
     "You have 40 seconds per question; the quiz moves on when time runs out.",
     "Your score appears the moment you finish."
   ],
+  "week": "2026-11-15",
   "questions": [
     {
       "id": 1,
       "type": "Academic Collocation",
-      "prompt": "In academic environmental reports, plastic debris is described as ________ in marine ecosystems, meaning it can be detected across all oceanic strata.",
-      "options": [
-        "anachronistic",
-        "ubiquitous",
-        "ephemeral",
-        "quixotic"
-      ],
-      "correctIndex": 1,
-      "explanation": "'Ubiquitous' indicates presence everywhere simultaneously, standard in high-band IELTS environmental essays.",
       "label": "Academic Collocation",
+      "prompt": "Many candidates who secure high scores in IELTS Writing Task 2 manage to ____ a profound understanding of complex global issues in their essays.",
+      "options": [
+        "articulate",
+        "pronounce",
+        "whisper",
+        "verbalize"
+      ],
+      "correctIndex": 0,
+      "explanation": "The context requires a verb that forms a natural academic collocation with 'a profound understanding' or complex ideas. 'Articulate' precisely means to express an idea clearly and coherently in formal academic writing. While 'verbalize' is a synonym, 'articulate an understanding/idea' is the standard high-level collocation recognized in IELTS Lexical Resource.",
       "words": [
-        "ubiquitous"
+        "articulate",
+        "profound"
       ]
     },
     {
       "id": 2,
-      "type": "Lexical Precision",
-      "prompt": "The research supervisor insisted that all dissertation conclusions be presented in a ________ manner to prevent ambiguity among international peer reviewers.",
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "The government introduced new educational subsidies to ____ the financial burden on rural families striving for higher education.",
       "options": [
-        "lucid",
-        "esoteric",
-        "convoluted",
-        "transitory"
+        "alleviate",
+        "comfort",
+        "lighten up",
+        "mellow"
       ],
       "correctIndex": 0,
-      "explanation": "'Lucid' means clear, rational, and easily understood, avoiding ambiguity.",
-      "label": "Lexical Precision",
+      "explanation": "The noun 'burden' strongly collocates with the academic verb 'alleviate' (to alleviate the burden). 'Comfort' applies to people rather than abstract financial difficulties, and 'lighten up' is an informal phrasal verb unsuitable for academic writing.",
       "words": [
-        "lucid"
+        "alleviate"
       ]
     },
     {
       "id": 3,
-      "type": "Academic Register",
-      "prompt": "Policymakers decided on a ________ infrastructure plan, prioritizing immediate public transit fixes over speculative multi-decade megaprojects.",
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "Researchers identified a statistical ____ in the demographic data, which challenged long-held assumptions about urbanization in India.",
       "options": [
-        "pragmatic",
-        "utopian",
-        "anachronistic",
-        "dogmatic"
+        "anomaly",
+        "strangeness",
+        "deviationist",
+        "unconformity"
       ],
       "correctIndex": 0,
-      "explanation": "'Pragmatic' implies realistic, practical problem solving based on current conditions.",
-      "label": "Academic Register",
+      "explanation": "In academic research contexts, an unexpected or irregular data point is formally referred to as a 'statistical anomaly'. Terms like 'strangeness' are far too informal and imprecise for academic IELTS reading and writing passages.",
       "words": [
-        "pragmatic"
+        "anomaly"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "Adopting sustainable agricultural methods can help ____ the environmental impact of rapid industrial development.",
+      "options": [
+        "mitigate",
+        "appease",
+        "assuage",
+        "soften"
+      ],
+      "correctIndex": 0,
+      "explanation": "Mitigate' forms a classic academic collocation with 'impact' (to mitigate the impact/risk/effects of something). While 'appease' and 'assuage' mean to pacify or lessen, they typically collocate with emotions, fears, or people rather than environmental impacts.",
+      "words": [
+        "mitigate"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "Including relevant statistical evidence in IELTS Writing Task 1 helps to ____ the arguments presented in the description.",
+      "options": [
+        "bolster",
+        "inflate",
+        "escalate",
+        "maximize"
+      ],
+      "correctIndex": 0,
+      "explanation": "To strengthen, support, or uphold an argument or position, the precise academic verb is 'bolster' (bolster an argument/claim). 'Inflate' carrying a negative connotation of artificially expanding something, making it incorrect here.",
+      "words": [
+        "bolster"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "The candidate's ____ attempt to memorize entire sample essays ultimately led to lower scores in the Lexical Resource criterion.",
+      "options": [
+        "naive",
+        "uneducated",
+        "innocent",
+        "ignorant"
+      ],
+      "correctIndex": 0,
+      "explanation": "The adjective 'naive' describes a lack of experience, judgment, or wisdom in an academic or strategic context (e.g., a naive attempt/belief). 'Innocent' relates to guilt or moral purity, which does not fit the context of exam preparation strategies.",
+      "words": [
+        "naive"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "The policy change had a ____ impact on the economy, altering trade dynamics across several manufacturing sectors.",
+      "options": [
+        "profound",
+        "bottomless",
+        "steep",
+        "thoroughgoing"
+      ],
+      "correctIndex": 0,
+      "explanation": "Profound' collocates strongly with abstract nouns like 'impact', 'effect', 'change', and 'understanding' to signal great depth or seriousness. 'Bottomless' is figurative and inappropriate for formal academic discourse.",
+      "words": [
+        "profound"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Academic Collocation",
+      "label": "Academic Collocation",
+      "prompt": "Local officials attempted to ____ angry residents by promising immediate infrastructure repairs following the monsoon damage.",
+      "options": [
+        "placate",
+        "mitigate",
+        "dilute",
+        "reconciliate"
+      ],
+      "correctIndex": 0,
+      "explanation": "The target word 'placate' means to make someone less angry or hostile, taking a person or group as its direct object (placate residents/voters). 'Mitigate' applies to abstract situations or damage, not direct human emotions or people.",
+      "words": [
+        "placate",
+        "mitigate"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Word Form",
+      "label": "Word Form",
+      "prompt": "The speaker demonstrated exceptional ____ during the IELTS Speaking test, explaining intricate cultural concepts with ease.",
+      "options": [
+        "articulation",
+        "articulate",
+        "articulated",
+        "articulately"
+      ],
+      "correctIndex": 0,
+      "explanation": "The sentence structure requires a noun following the adjective 'exceptional'. 'Articulation' is the noun form of the family. 'Articulately' is an adverb, and 'articulate' is either an adjective or verb.",
+      "words": [
+        "articulate"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Word Form",
+      "label": "Word Form",
+      "prompt": "The implementation of renewable energy sources provided significant ____ of pollution levels in major urban centers.",
+      "options": [
+        "alleviation",
+        "alleviate",
+        "alleviated",
+        "alleviating"
+      ],
+      "correctIndex": 0,
+      "explanation": "The blank comes after the adjective 'significant' and before the preposition 'of', requiring the noun form 'alleviation'. 'Alleviate' is the verb root and cannot function as the head of a noun phrase.",
+      "words": [
+        "alleviate"
       ]
     }
   ]

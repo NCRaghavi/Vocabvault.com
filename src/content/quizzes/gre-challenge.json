@@ -1,113 +1,203 @@
 {
   "examId": "gre",
   "examTitle": "Sunday GRE Quiz",
-  "subtitle": "5 questions in real GRE format. A new quiz on this week's words goes live every Sunday.",
-  "timePerQuestionSeconds": 45,
+  "subtitle": "10 questions on this week's words, in real GRE format. Older words from 3–4 weeks ago come back too.",
+  "timePerQuestionSeconds": 60,
   "passingScorePercentage": 70,
   "instructions": [
-    "You have 45 seconds per question; the quiz moves on when time runs out.",
-    "Your score appears the moment you finish.",
-    "Sentence Equivalence: choose exactly two answers that give the sentence the same meaning."
+    "You have 60 seconds per question; the quiz moves on when time runs out.",
+    "Your score appears the moment you finish."
   ],
+  "week": "2026-11-15",
   "questions": [
     {
       "id": 1,
       "type": "Text Completion",
-      "prompt": "Although the preliminary geological findings were hailed as groundbreaking, subsequent longitudinal surveys proved that the initial seismic anomalies were merely ________, dissipating before any permanent faultline could be verified.",
+      "label": "Text Completion",
+      "prompt": "Despite the tech company's aggressive PR campaign promising revolutionary AI integration, the actual software update offered only ____ improvements to daily workflow, disappointing seasoned developers.",
       "options": [
-        "anachronistic",
-        "ephemeral",
-        "ubiquitous",
-        "lucid",
-        "dogmatic"
+        "mundane",
+        "profound",
+        "idiosyncratic",
+        "unprecedented",
+        "radical"
       ],
-      "correctIndex": 1,
-      "explanation": "'Ephemeral' (lasting for a brief time / transitory) perfectly matches the context of seismic anomalies that 'dissipated before any permanent faultline could be verified.' The contrast word 'Although' contrasts the hailed 'groundbreaking' status with their fleeting reality.",
+      "correctIndex": 0,
+      "explanation": "The clue 'despite... revolutionary AI integration' and 'disappointing seasoned developers' indicates that the improvements were unimpressive and ordinary. 'Mundane' means lacking interest or excitement, fitting the context of routine, minor updates. A common trap is 'profound', which represents the opposite of what the contrasting transition implies.",
       "words": [
-        "ephemeral"
-      ],
-      "label": "Text Completion"
+        "mundane"
+      ]
     },
     {
       "id": 2,
-      "type": "Sentence Equivalence",
-      "prompt": "The dean praised the visiting physicist for her ability to render extraordinarily complex quantum electrodynamics into ________ lectures that captivated both undergraduate freshmen and senior faculty alike.",
+      "type": "Text Completion",
+      "label": "Text Completion",
+      "prompt": "The lead researcher was able to ____ the complex mathematical proofs so clearly that even undergraduate students could grasp the underlying theoretical framework.",
       "options": [
-        "abstruse",
-        "convoluted",
-        "pellucid",
-        "lucid",
-        "esoteric",
-        "perfunctory"
+        "obfuscate",
+        "articulate",
+        "mitigate",
+        "bolster",
+        "placate"
       ],
-      "correctIndex": 2,
-      "explanation": "The lectures 'captivated both undergraduate freshmen and senior faculty', so despite the complex subject they must have been clear: 'lucid' and 'pellucid' both mean easy to understand. 'Abstruse' and 'esoteric' are the trap pair: they are synonyms of each other, but they mean hard to understand, the opposite of what the sentence needs.",
-      "correctIndices": [
-        2,
-        3
-      ],
-      "label": "Sentence Equivalence",
+      "correctIndex": 1,
+      "explanation": "The clue 'so clearly that even undergraduate students could grasp' points to expressing ideas fluently and coherently. 'Articulate' means to express an idea or feeling fluently and clearly. The trap 'bolster' means to support, but supporting a proof does not inherently mean explaining it clearly.",
       "words": [
-        "lucid"
+        "articulate"
       ]
     },
     {
       "id": 3,
       "type": "Text Completion",
-      "prompt": "Rejecting the purely theoretical musings of earlier socio-political treatises, the new commission took a resolutely ________ stance, enacting only policies supported by quantifiable municipal data.",
+      "label": "Text Completion",
+      "prompt": "In an effort to ____ the angry shareholders following the unexpected quarterly loss, the board of directors proposed an immediate share buyback program.",
       "options": [
-        "quixotic",
-        "pragmatic",
-        "visionary",
-        "dogmatic",
-        "anachronistic"
+        "placate",
+        "articulate",
+        "exacerbate",
+        "repudiate",
+        "instigate"
       ],
-      "correctIndex": 1,
-      "explanation": "'Pragmatic' (dealing with things sensibly and practically based on real-world results rather than theory) directly contrasts with 'purely theoretical musings' and aligns with 'quantifiable municipal data'.",
+      "correctIndex": 0,
+      "explanation": "The context describes dealing with 'angry shareholders' by offering a financial concession to calm them down. 'Placate' means to make someone less angry or hostile. The trap 'exacerbate' means to make a problem worse, which contradicts the board's intent.",
       "words": [
-        "pragmatic"
-      ],
-      "label": "Text Completion"
+        "placate"
+      ]
     },
     {
       "id": 4,
       "type": "Text Completion",
-      "prompt": "Once restricted to secretive medieval guilds, the alchemical formulas that scholars once dismissed as hopelessly ________ have now been decoded and contextualized by modern historians of science.",
+      "label": "Text Completion",
+      "prompt": "The discovery of liquid water under the Martian surface was considered an absolute ____ by astronomers, as existing thermal models predicted the region should be entirely frozen.",
       "options": [
-        "esoteric",
-        "ubiquitous",
-        "exoteric",
-        "banal",
-        "pragmatic"
+        "anomaly",
+        "norm",
+        "platitude",
+        "paradigm",
+        "analogy"
       ],
       "correctIndex": 0,
-      "explanation": "'Esoteric' refers to knowledge intended for or understood by only a small, specialized, initiated inner circle — in this case, 'secretive medieval guilds'.",
+      "explanation": "The sentence highlights a clash between expectations ('models predicted... entirely frozen') and reality ('discovery of liquid water'). An 'anomaly' is something that deviates from what is standard, normal, or expected. The trap 'paradigm' refers to a typical example or pattern, which is the opposite of an unexpected deviation.",
       "words": [
-        "esoteric"
-      ],
-      "label": "Text Completion"
+        "anomaly"
+      ]
     },
     {
       "id": 5,
-      "type": "Sentence Equivalence",
-      "prompt": "While smartphone notifications have become ________ in contemporary urban life, cognitive scientists caution that this constant sensory bombardment degrades sustained academic attention spans.",
+      "type": "Text Completion",
+      "label": "Text Completion",
+      "prompt": "While the new monetary policy did little to reverse inflation, economic analysts noted that it helped to ____ the immediate impact of the supply chain crisis on small businesses.",
       "options": [
-        "ubiquitous",
-        "infrequent",
-        "omnipresent",
-        "isolated",
-        "transitory",
-        "sporadic"
+        "alleviate",
+        "magnify",
+        "bolster",
+        "manifest",
+        "prolong"
       ],
       "correctIndex": 0,
-      "explanation": "'Constant sensory bombardment' tells you notifications are everywhere: 'ubiquitous' and 'omnipresent' both mean that. 'Infrequent' and 'sporadic' are the trap pair: they mean the same as each other, but they contradict 'constant'.",
+      "explanation": "The sentence sets up a partial success where the policy reduced the negative effects ('impact') of a crisis. 'Alleviate' means to make suffering or a problem less severe. The trap 'bolster' means to strengthen, but one does not strengthen a negative impact.",
+      "words": [
+        "alleviate"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Text Completion",
+      "label": "Text Completion",
+      "prompt": "The philosopher’s latest treatise was lauded for its ____ insights into human consciousness, offering a depth of analysis rarely seen in contemporary literature.",
+      "options": [
+        "profound",
+        "superficial",
+        "naive",
+        "mundane",
+        "transitory"
+      ],
+      "correctIndex": 0,
+      "explanation": "The clues 'lauded' and 'depth of analysis rarely seen' call for a word meaning deep, insightful, or far-reaching. 'Profound' means having or showing great knowledge or insight. The trap 'superficial' is an antonym.",
+      "words": [
+        "profound"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Text Completion",
+      "label": "Text Completion",
+      "prompt": "The startup founder's ____ belief that potential competitors would voluntarily refrain from copying her unpatented software cost her company its market lead.",
+      "options": [
+        "naive",
+        "astute",
+        "shrewd",
+        "idiosyncratic",
+        "pragmatic"
+      ],
+      "correctIndex": 0,
+      "explanation": "Believing competitors will voluntarily play fair without patent protection shows a lack of wisdom or worldly experience. 'Naive' means showing a lack of experience, wisdom, or judgment. Traps like 'astute' or 'shrewd' imply keen judgment, which directly contradicts the costly mistake.",
+      "words": [
+        "naive"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Text Completion",
+      "label": "Text Completion",
+      "prompt": "Although the CEO’s management style was undeniably ____—he insisted on drafting all press releases by hand—his eccentric habits did not hinder the firm's overall profitability.",
+      "options": [
+        "idiosyncratic",
+        "orthodox",
+        "ubiquitous",
+        "conventional",
+        "deleterious"
+      ],
+      "correctIndex": 0,
+      "explanation": "The text explicitly defines the style using 'eccentric habits' and 'insisted on drafting all press releases by hand.' 'Idiosyncratic' means peculiar or individualistic. Traps like 'orthodox' or 'conventional' mean normal/standard, which are opposite in meaning.",
+      "words": [
+        "idiosyncratic"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Sentence Equivalence",
+      "label": "Sentence Equivalence",
+      "prompt": "To ____ public panic following the rumor of a banking collapse, the central bank issued a statement guaranteeing all consumer deposits.",
+      "options": [
+        "mitigate",
+        "allay",
+        "instigate",
+        "bolster",
+        "buttress",
+        "exacerbate"
+      ],
+      "correctIndex": 0,
       "correctIndices": [
         0,
-        2
+        1
       ],
-      "label": "Sentence Equivalence",
+      "explanation": "The blank requires a word that means to diminish or calm public fear/panic. Both 'mitigate' and 'allay' mean to lessen or alleviate severe feelings or problems. The trap pair 'bolster' and 'buttress' both mean to support/strengthen, but strengthening panic is the opposite of the bank's intent.",
       "words": [
-        "ubiquitous"
+        "mitigate"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Sentence Equivalence",
+      "label": "Sentence Equivalence",
+      "prompt": "The defense attorney presented newly discovered DNA evidence to ____ her client’s alibi, convincing the jury of his innocence.",
+      "options": [
+        "bolster",
+        "buttress",
+        "undermine",
+        "subvert",
+        "alleviate",
+        "mitigate"
+      ],
+      "correctIndex": 0,
+      "correctIndices": [
+        0,
+        1
+      ],
+      "explanation": "The evidence is used to strengthen the alibi to convince the jury. Both 'bolster' and 'buttress' mean to support or strengthen. The tempting trap pair 'alleviate' and 'mitigate' share a meaning (to reduce severity), but one does not 'alleviate an alibi'.",
+      "words": [
+        "bolster"
       ]
     }
   ]

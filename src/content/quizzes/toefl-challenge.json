@@ -1,94 +1,184 @@
 {
   "examId": "toefl",
   "examTitle": "Sunday TOEFL Quiz",
-  "subtitle": "5 questions in real TOEFL format. A new quiz on this week's words goes live every Sunday.",
-  "timePerQuestionSeconds": 35,
-  "passingScorePercentage": 75,
+  "subtitle": "10 questions on this week's words, in real TOEFL format. Older words from 3–4 weeks ago come back too.",
+  "timePerQuestionSeconds": 40,
+  "passingScorePercentage": 70,
   "instructions": [
-    "You have 35 seconds per question; the quiz moves on when time runs out.",
+    "You have 40 seconds per question; the quiz moves on when time runs out.",
     "Your score appears the moment you finish."
   ],
+  "week": "2026-11-15",
   "questions": [
     {
       "id": 1,
-      "type": "Vocabulary in Context",
-      "prompt": "In the paleontology passage, the author asserts that the existence of single-celled cyanobacteria was ________ in primordial oceans, appearing in rock strata dating back 3.5 billion years across all major continents.",
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "During the monsoon season, the urban planning committee attempted to mitigate the severe flooding caused by rapid urbanization. Their proposed infrastructure upgrades were designed to all____ the burden on the city's aging drainage systems.\nWhich option correctly completes the word all____ in the paragraph?",
       "options": [
-        "ephemeral",
-        "ubiquitous",
-        "anachronistic",
-        "esoteric"
+        "alleviate",
+        "allocate",
+        "allude",
+        "allergen"
       ],
-      "correctIndex": 1,
-      "explanation": "'Ubiquitous' means present everywhere simultaneously. The author explains that cyanobacteria were found in rock strata across 'all major continents', confirming their widespread presence.",
-      "label": "Vocabulary in Context",
+      "correctIndex": 0,
+      "explanation": "The context discusses reducing or lessening the burden on drainage systems during heavy rain. 'Alleviate' means to make a problem or suffering less severe. The trap 'allocate' starts with 'all' but means to distribute resources, which does not fit the context.",
       "words": [
-        "ubiquitous"
+        "alleviate"
       ]
     },
     {
       "id": 2,
-      "type": "Vocabulary in Context",
-      "prompt": "The word 'ephemeral' in the biology passage refers to desert wildflowers that bloom exclusively after seasonal rains and wither within forty-eight hours. The word is closest in meaning to:",
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "Seismologists monitoring the Deccan Traps observed a sudden spike in seismic activity that did not align with historical patterns. This geothermal anom____ puzzled researchers, who initially suspected an instrument calibration error.\nWhich option correctly completes the word anom____ in the paragraph?",
       "options": [
-        "short-lived",
-        "enduring",
-        "poisonous",
-        "widespread"
+        "anomaly",
+        "anonymity",
+        "anomie",
+        "anomalous"
       ],
       "correctIndex": 0,
-      "explanation": "'Ephemeral' means lasting for a very short time; fleeting or transitory. Desert flowers withering within forty-eight hours are quintessential examples of short-lived phenomena.",
-      "label": "Vocabulary in Context"
+      "explanation": "The passage describes an unexpected spike in activity that deviates from historical norms, requiring a noun. 'Anomaly' means something that deviates from what is standard, normal, or expected. 'Anomalous' is an adjective form and thus grammatically incorrect here.",
+      "words": [
+        "anomaly"
+      ]
     },
     {
       "id": 3,
-      "type": "Textual Inference",
-      "prompt": "According to the geology text, the professor delivered a remarkably ________ exposition of plate tectonics, allowing exchange students with varied English proficiency to comprehend the subduction process without difficulty.",
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "During the international trade summit, the ambassador was commended for her ability to artic____ complex economic policy proposals clearly to foreign delegates. Her persuasive speech helped bridge the diplomatic divide between the participating nations.\nWhich option correctly completes the word artic____ in the paragraph?",
       "options": [
-        "lucid",
-        "convoluted",
-        "obscure",
-        "anachronistic"
+        "articulate",
+        "artifice",
+        "article",
+        "artifact"
       ],
       "correctIndex": 0,
-      "explanation": "'Lucid' means clearly expressed, easy to understand, and completely transparent, which explains why international students grasped the concept without difficulty.",
-      "label": "Textual Inference",
+      "explanation": "The prompt describes expressively conveying complex policy proposals clearly in speech. 'Articulate' means to express an idea or feeling fluently and coherently. The trap 'artifice' relates to deception and does not fit the context.",
       "words": [
-        "lucid"
+        "articulate"
       ]
     },
     {
       "id": 4,
-      "type": "Vocabulary in Context",
-      "prompt": "Economic historians described the post-war agrarian reform as a ________ compromise, choosing policies that could be immediately implemented with existing farm equipment rather than waiting for industrialized tractors.",
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "Architects studying historical structures in South Asia often notice unique design choices specific to individual master builders. These idio____ stylistic elements reflect personal artistic preferences rather than the dominant regional trends of the era.\nWhich option correctly completes the word idio____ in the paragraph?",
       "options": [
-        "quixotic",
-        "pragmatic",
-        "esoteric",
-        "theoretical"
+        "idiosyncratic",
+        "idiomatic",
+        "idiopathic",
+        "idiosyncrasy"
       ],
-      "correctIndex": 1,
-      "explanation": "'Pragmatic' means practical and realistic, focused on immediate utility and tangible tools rather than abstract or perfectionist ideals.",
-      "label": "Vocabulary in Context",
+      "correctIndex": 0,
+      "explanation": "The word modifies 'stylistic elements' and refers to unique, personal traits of individual builders. 'Idiosyncratic' is an adjective meaning peculiar or individual. 'Idiosyncrasy' is a noun and cannot modify 'stylistic elements' directly.",
       "words": [
-        "pragmatic"
+        "idiosyncratic"
       ]
     },
     {
       "id": 5,
-      "type": "Reference & Nuance",
-      "prompt": "The anthropologist noted that ancient tribal rites once considered strictly ________ and shielded from outsiders have now been recorded and made available to global linguistics archives.",
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "While historians often focus on grand battles, everyday historical artifacts offer equal insight into ancient civilizations. Scholars analyzing household pottery gain valuable knowledge about the mun____ tasks of daily domestic life.\nWhich option correctly completes the word mun____ in the paragraph?",
       "options": [
-        "esoteric",
-        "accessible",
         "mundane",
-        "ubiquitous"
+        "municipal",
+        "munificent",
+        "munition"
       ],
       "correctIndex": 0,
-      "explanation": "'Esoteric' refers to knowledge intended for or understood only by an enlightened inner circle of initiates, directly matching rituals previously shielded from outsiders.",
-      "label": "Reference & Nuance",
+      "explanation": "The clue contrasts grand battles with 'everyday' and 'daily domestic life'. 'Mundane' means lacking interest or excitement; dull or ordinary. 'Municipal' relates to civic affairs and is incorrect.",
       "words": [
-        "esoteric"
+        "mundane"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "The management tried to plac____ the striking workers by offering modest concessions regarding break schedules. However, the employees demanded comprehensive wage reforms before returning to duty.\nWhich option correctly completes the word plac____ in the paragraph?",
+      "options": [
+        "placate",
+        "placebo",
+        "placid",
+        "placard"
+      ],
+      "correctIndex": 0,
+      "explanation": "The paragraph describes management trying to calm or satisfy dissatisfied workers with concessions. 'Placate' means to make someone less angry or hostile. 'Placid' is an adjective meaning calm, which does not fit the verb slot.",
+      "words": [
+        "placate"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "The invention of the zero in ancient Indian mathematics had a prof____ impact on global computation and scientific development. Its introduction revolutionized numerical systems and enabled advanced astronomical calculations.\nWhich option correctly completes the word prof____ in the paragraph?",
+      "options": [
+        "profound",
+        "profuse",
+        "proficient",
+        "profligate"
+      ],
+      "correctIndex": 0,
+      "explanation": "The context describes a revolutionary, far-reaching impact on global mathematics. 'Profound' means very great or intense. 'Profuse' means plentiful or abundant, which is less appropriate for describing historical impact.",
+      "words": [
+        "profound"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Complete the Words",
+      "label": "Complete the Words",
+      "prompt": "Early researchers were criticized for taking a naiv____ approach to ecological conservation by ignoring local community needs. They wrongly assumed that simply establishing protected boundaries would solve deforestation.\nWhich option correctly completes the word naiv____ in the paragraph?",
+      "options": [
+        "naive",
+        "naivety",
+        "navigate",
+        "nainsook"
+      ],
+      "correctIndex": 0,
+      "explanation": "The text explains that researchers wrongly assumed simple boundaries would work, showing a lack of experience or wisdom. 'Naive' is an adjective meaning showing a lack of experience, wisdom, or judgment. 'Naivety' is a noun.",
+      "words": [
+        "naive"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Vocabulary in Context",
+      "label": "Vocabulary in Context",
+      "prompt": "To combat coastal erosion along the eastern peninsula, environmental engineers constructed artificial reefs offshore. These structures helped mitigate the destructive impact of heavy storm surges during the annual cyclone season.\n\nThe word mitigate in the passage is closest in meaning to",
+      "options": [
+        "alleviate",
+        "intensify",
+        "investigate",
+        "generate"
+      ],
+      "correctIndex": 0,
+      "explanation": "In this context, 'mitigate' means to make less severe or diminish the damage of storm surges. 'Alleviate' is a direct synonym meaning to make a problem less intense. 'Intensify' is an antonym.",
+      "words": [
+        "mitigate",
+        "alleviate"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Vocabulary in Context",
+      "label": "Vocabulary in Context",
+      "prompt": "The research team gathered extensive empirical data from multiple agricultural trials across Punjab. They hoped these quantitative findings would bolster their theoretical model regarding crop yields under altered climate conditions.\n\nThe word bolster in the passage is closest in meaning to",
+      "options": [
+        "reinforce",
+        "undermine",
+        "criticize",
+        "discard"
+      ],
+      "correctIndex": 0,
+      "explanation": "The researchers are using empirical data to support or strengthen their theoretical model. 'Bolster' means to support or strengthen, making 'reinforce' the correct choice. 'Undermine' is an antonym.",
+      "words": [
+        "bolster"
       ]
     }
   ]

@@ -1,46 +1,183 @@
 {
   "examId": "sat",
   "examTitle": "Sunday SAT Quiz",
-  "subtitle": "2 questions in real SAT format. A new quiz on this week's words goes live every Sunday.",
-  "timePerQuestionSeconds": 35,
+  "subtitle": "10 questions on this week's words, in real SAT format. Older words from 3–4 weeks ago come back too.",
+  "timePerQuestionSeconds": 70,
   "passingScorePercentage": 70,
   "instructions": [
-    "You have 35 seconds per question; the quiz moves on when time runs out.",
+    "You have 70 seconds per question; the quiz moves on when time runs out.",
     "Your score appears the moment you finish."
   ],
+  "week": "2026-11-15",
   "questions": [
     {
       "id": 1,
       "type": "Words in Context",
-      "prompt": "Critics noted that performing a 1920s jazz opera with actors clad in 21st-century cybernetic suits was intentionally ________, designed to bridge past and future aesthetics.",
+      "label": "Words in Context",
+      "prompt": "During the festival of Diwali, traffic congestion in New Delhi reaches unprecedented levels, overwhelming the city's transport infrastructure. To ____ the gridlock, urban planners implemented temporary one-way lanes and restricted heavy commercial vehicles during peak hours, which successfully reduced travel delays for commuters.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
       "options": [
-        "anachronistic",
-        "pragmatic",
-        "lucid",
-        "ephemeral"
+        "alleviate",
+        "bolster",
+        "articulate",
+        "profound"
       ],
       "correctIndex": 0,
-      "explanation": "'Anachronistic' means chronologically misplaced or belonging to a different era.",
-      "label": "Words in Context",
+      "explanation": "The context describes urban planners taking measures to reduce traffic gridlock and travel delays during Diwali. 'Alleviate' means to make a problem less severe, which precisely fits the context of easing congestion. 'Bolster' is incorrect as it means to strengthen or support, which would imply making the gridlock worse.",
       "words": [
-        "anachronistic"
+        "alleviate"
       ]
     },
     {
       "id": 2,
       "type": "Words in Context",
-      "prompt": "The bloom of the rare night-flowering cereus is famously ________; it opens for a single evening and withers by dawn.",
+      "label": "Words in Context",
+      "prompt": "Astronomers analyzing data from the Giant Metrewave Radio Telescope in Pune detected a sudden, unexplained spike in cosmic radiation from a quiet region of space. Initially dismissed as equipment error, the spectral ____ persisted across multiple observations, prompting researchers to investigate the possibility of a novel astrophysical phenomenon.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
       "options": [
-        "ephemeral",
-        "ubiquitous",
-        "immutable",
-        "perennial"
+        "mundane",
+        "anomaly",
+        "mitigate",
+        "naive"
+      ],
+      "correctIndex": 1,
+      "explanation": "The passage describes an unexpected, unexplained spike in radiation that stands out from normal observations. An 'anomaly' is a deviation from what is standard or expected, fitting the context perfectly. 'Mundane' is an adjective meaning lacking interest or dull, which contradicts the surprising nature of the discovery.",
+      "words": [
+        "anomaly"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "The legal scholar’s monograph on constitutional reform in India was praised by reviewers for its remarkable clarity. She was able to ____ complex jurisprudential arguments regarding fundamental rights into precise, accessible concepts for both law students and civil society advocates.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "placate",
+        "articulate",
+        "mitigate",
+        "bolster"
+      ],
+      "correctIndex": 1,
+      "explanation": "The text emphasizes the scholar's ability to present complex arguments with clarity and precision. 'Articulate' means to express an idea clearly and coherently in words. 'Placate' is incorrect because it means to soothe or appease someone, which is irrelevant to expressing legal concepts.",
+      "words": [
+        "articulate"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "While most classical Indian musicians adhere strictly to established raga frameworks, the sitar maestro was known for his ____ style, often incorporating unconventional rhythms and Western harmonic structures that reflected his distinct artistic personality.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "idiosyncratic",
+        "mundane",
+        "naive",
+        "profound"
       ],
       "correctIndex": 0,
-      "explanation": "'Ephemeral' denotes lasting for a very brief duration or fleeting existence.",
-      "label": "Words in Context",
+      "explanation": "The musician uses unconventional methods unique to his artistic vision rather than following standard tradition. 'Idiosyncratic' describes behavior or features peculiar to an individual, matching the description of his unique style. 'Mundane' is wrong because it means dull or ordinary, whereas his style is distinct and unconventional.",
       "words": [
-        "ephemeral"
+        "idiosyncratic"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "Despite the extraordinary mathematical breakthroughs described in Ramanujan's notebooks, his daily correspondence often dealt with the remarkably ____ aspects of life in Cambridge, such as managing a vegetarian diet in wartime Britain and complaining about the cold weather.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "profound",
+        "mundane",
+        "idiosyncratic",
+        "articulate"
+      ],
+      "correctIndex": 1,
+      "explanation": "The text contrasts his extraordinary mathematical work with ordinary daily matters like food and weather. 'Mundane' means lacking interest or excitement, relating to ordinary, practical matters. 'Profound' is incorrect because it is the opposite of ordinary, describing deep or intense insight.",
+      "words": [
+        "mundane"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "Following intense public outrage over rising fuel tariffs, government representatives met with union leaders to offer targeted subsidies. This conciliatory gesture was designed primarily to ____ the angry protesters before regional election campaigning officially commenced.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "placate",
+        "articulate",
+        "bolster",
+        "mitigate"
+      ],
+      "correctIndex": 0,
+      "explanation": "The government is trying to calm angry protesters by offering concessions. 'Placate' means to make someone less angry or hostile, which fits the political strategy described. 'Mitigate' usually applies to reducing the severity of a situation or problem (e.g., mitigating damage), whereas 'placate' specifically applies to pacifying people.",
+      "words": [
+        "placate"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "The discovery of ancient Harappan trade seals along the coast of Mesopotamia had a ____ impact on archaeological theories, fundamentally reshaping historians' understanding of Bronze Age maritime commerce between India and the Middle East.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "naive",
+        "mundane",
+        "profound",
+        "idiosyncratic"
+      ],
+      "correctIndex": 2,
+      "explanation": "The discovery fundamentally reshaped understanding, indicating a deep and significant effect. 'Profound' means having great knowledge, insight, or far-reaching effect. 'Naive' is incorrect because it implies a lack of experience or sophistication, which makes no sense describing an impact.",
+      "words": [
+        "profound"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "The novice entrepreneur mistakenly assumed that securing venture capital funding would automatically guarantee business success, reflecting a ____ belief that ignored the severe operational and competitive challenges of the Indian startup market.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "naive",
+        "profound",
+        "articulate",
+        "mundane"
+      ],
+      "correctIndex": 0,
+      "explanation": "The passage highlights the entrepreneur's lack of experience and oversimplified view of business challenges. 'Naive' means showing a lack of experience, wisdom, or judgment. 'Profound' is an incorrect choice because it implies depth and wisdom, contradicting the entrepreneur's foolish assumption.",
+      "words": [
+        "naive"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "Agricultural scientists in Punjab have recommended crop rotation and organic mulching to ____ the devastating effects of soil degradation caused by years of intensive chemical fertilizer application.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "mitigate",
+        "articulate",
+        "placate",
+        "bolster"
+      ],
+      "correctIndex": 0,
+      "explanation": "The text discusses techniques used to lessen or reduce the negative effects of soil degradation. 'Mitigate' means to make less severe, serious, or painful. 'Placate' is wrong because it means to appease people, not environmental problems.",
+      "words": [
+        "mitigate"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Words in Context",
+      "label": "Words in Context",
+      "prompt": "To support domestic technology firms facing fierce foreign competition, the Ministry of Electronics and Information Technology unveiled a series of financial incentives to ____ domestic semiconductor manufacturing capacities.\n\nWhich choice completes the text with the most logical and precise word or phrase?",
+      "options": [
+        "bolster",
+        "alleviate",
+        "mitigate",
+        "placate"
+      ],
+      "correctIndex": 0,
+      "explanation": "The government is using incentives to strengthen or build up local production capacity. 'Bolster' means to support, strengthen, or build up. 'Alleviate' is incorrect because one alleviates problems or burdens, not positive manufacturing capacities.",
+      "words": [
+        "bolster"
       ]
     }
   ]

@@ -1,97 +1,183 @@
 {
   "examId": "pte",
   "examTitle": "Sunday PTE Quiz",
-  "subtitle": "5 questions in real PTE format. A new quiz on this week's words goes live every Sunday.",
-  "timePerQuestionSeconds": 40,
-  "passingScorePercentage": 75,
+  "subtitle": "10 questions on this week's words, in real PTE format. Older words from 3–4 weeks ago come back too.",
+  "timePerQuestionSeconds": 45,
+  "passingScorePercentage": 70,
   "instructions": [
-    "You have 40 seconds per question; the quiz moves on when time runs out.",
+    "You have 45 seconds per question; the quiz moves on when time runs out.",
     "Your score appears the moment you finish."
   ],
+  "week": "2026-11-15",
   "questions": [
     {
       "id": 1,
-      "type": "Reading: Fill in the Blanks",
-      "prompt": "In academic sociology, using contemporary 21st-century technological norms to judge pre-industrial agricultural communities is regarded as methodologically ________ and intellectually misleading.",
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "The research team hoped that implementing green infrastructure in urban spaces would help ____ the severe impact of seasonal flooding in vulnerable coastal regions.",
       "options": [
-        "anachronistic",
-        "ubiquitous",
-        "lucid",
-        "pragmatic"
+        "alleviate",
+        "alleviation",
+        "alleviated",
+        "alleviates"
       ],
       "correctIndex": 0,
-      "explanation": "'Anachronistic' means belonging to a period other than that in which it exists; applying modern standards to pre-industrial societies misplaces chronological context.",
-      "label": "Reading: Fill in the Blanks",
+      "explanation": "The infinitive marker 'to' (implied after 'would help') requires a base verb form. 'Alleviate' correctly completes the phrase to mean reducing the severity of flooding. The noun 'alleviation' is grammatically incorrect in this verb slot.",
       "words": [
-        "anachronistic"
+        "alleviate"
       ]
     },
     {
       "id": 2,
-      "type": "Academic Collocation",
-      "prompt": "Environmental scientists reported that microplastic fragments have become ________ contaminants in oceanic food chains, found in plankton, deep-sea organisms, and apex predators alike.",
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "Astronomers detected an unexpected electromagnetic ____ in the satellite data, which challenged existing models of deep-space radiation patterns.",
       "options": [
-        "ubiquitous",
-        "isolated",
-        "ephemeral",
-        "intermittent"
+        "anomalous",
+        "anomaly",
+        "anomalies",
+        "anomalously"
       ],
-      "correctIndex": 0,
-      "explanation": "'Ubiquitous' is the standard academic adjective collocated with widespread contamination occurring everywhere across an ecosystem.",
-      "label": "Academic Collocation",
+      "correctIndex": 1,
+      "explanation": "The indefinite article 'an' paired with the adjective 'electromagnetic' requires a singular noun. 'Anomaly' fits both the grammatical context and the meaning of an irregular observation. The plural 'anomalies' violates the singular article constraint.",
       "words": [
-        "ubiquitous"
+        "anomaly"
       ]
     },
     {
       "id": 3,
       "type": "Reading & Writing: Fill in the Blanks",
-      "prompt": "Rather than waiting for long-term theoretical consensus on climate policy, municipal planners opted for ________ urban flood defenses that offered immediate, cost-effective storm protection.",
-      "options": [
-        "utopian",
-        "pragmatic",
-        "anachronistic",
-        "dogmatic"
-      ],
-      "correctIndex": 1,
-      "explanation": "'Pragmatic' denotes an approach guided by practical consequences and immediate feasibility rather than abstract theoretical debates.",
       "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "During the conference, the keynote speaker was able to clear and persuasively ____ complex quantum computing theories to an audience of non-specialist investors.",
+      "options": [
+        "articulation",
+        "articulated",
+        "articulate",
+        "articulates"
+      ],
+      "correctIndex": 2,
+      "explanation": "The modal auxiliary verb 'was able to' must be followed by a base verb. 'Articulate' correctly means to express ideas clearly and fluently. The past tense form 'articulated' is grammatically incorrect following the infinitive 'to'.",
       "words": [
-        "pragmatic"
+        "articulate"
       ]
     },
     {
       "id": 4,
-      "type": "Academic Vocabulary",
-      "prompt": "The primary advantage of the new biomedical protocol was its ________ explanation of molecular gene splicing, minimizing misunderstandings between international lab researchers.",
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "The author's highly ____ writing style, marked by unconventional punctuation and erratic narrative shifts, alienated traditional literary critics.",
       "options": [
-        "lucid",
-        "convoluted",
-        "nebulous",
-        "abstruse"
+        "idiosyncrasy",
+        "idiosyncratically",
+        "idiosyncratic",
+        "idiosyncrasies"
       ],
-      "correctIndex": 0,
-      "explanation": "'Lucid' means clear, rational, and easily understood, which prevents miscommunication among global teams.",
-      "label": "Academic Vocabulary",
+      "correctIndex": 2,
+      "explanation": "The modifier 'highly' modifies an adjective describing the noun phrase 'writing style'. 'Idiosyncratic' is the correct adjective form meaning peculiar or individualistic. The noun 'idiosyncrasy' cannot modify 'writing style' directly in this structure.",
       "words": [
-        "lucid"
+        "idiosyncratic"
       ]
     },
     {
       "id": 5,
-      "type": "Reading: Fill in the Blanks",
-      "prompt": "The temporary economic boom sparked by seasonal tourism was largely ________, leaving local infrastructure under-resourced once winter travel ceased.",
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "While theoretical physicists focus on extraordinary cosmic phenomena, experimentalists often spend months completing routine and ____ laboratory tasks.",
       "options": [
-        "immutable",
-        "ephemeral",
-        "perpetual",
-        "enduring"
+        "mundane",
+        "mundanely",
+        "mundanity",
+        "mundaneness"
+      ],
+      "correctIndex": 0,
+      "explanation": "The conjunction 'and' connects parallel descriptors for 'laboratory tasks', requiring an adjective alongside 'routine'. 'Mundane' fits the context of ordinary, dull work. The noun 'mundanity' breaks the parallel adjective structure.",
+      "words": [
+        "mundane"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "In an effort to ____ disgruntled shareholders after severe quarter-three losses, the board of directors announced an emergency restructuring plan.",
+      "options": [
+        "placate",
+        "placating",
+        "placation",
+        "placated"
+      ],
+      "correctIndex": 0,
+      "explanation": "The purpose clause structure 'In an effort to' requires a base verb to complete the infinitive. 'Placate' means to make someone less angry or hostile. The gerund 'placating' is grammatically incorrect after the infinitive 'to' in this context.",
+      "words": [
+        "placate"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "The discovery of penicillin had a ____ impact on modern medicine, fundamentally altering the treatment of infectious diseases globally.",
+      "options": [
+        "profoundly",
+        "profoundness",
+        "profound",
+        "profundity"
+      ],
+      "correctIndex": 2,
+      "explanation": "The noun 'impact' requires an adjective modifier following the article 'a'. 'Profound' is the correct adjective indicating great depth or intensity. The adverb 'profoundly' cannot directly modify the noun 'impact'.",
+      "words": [
+        "profound"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "It would be extremely ____ to assume that geopolitical stability can be maintained without continuous diplomatic dialogue.",
+      "options": [
+        "naively",
+        "naive",
+        "naivety",
+        "naivete"
       ],
       "correctIndex": 1,
-      "explanation": "'Ephemeral' describes short-lived or transitory events, precisely matching a seasonal economic surge that dissipates in winter.",
-      "label": "Reading: Fill in the Blanks",
+      "explanation": "The predicate structure 'It would be [adverb] [adjective]' requires the adjective 'naive' to describe the dummy pronoun clause. 'Naive' means showing a lack of experience or judgment. The noun forms 'naivety' or 'naivete' fail grammatically in this complement position.",
       "words": [
-        "ephemeral"
+        "naive"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "Urban planners introduced stringent zoning regulations to ____ the risks associated with unchecked real estate development in flood-prone areas.",
+      "options": [
+        "mitigation",
+        "mitigating",
+        "mitigate",
+        "mitigated"
+      ],
+      "correctIndex": 2,
+      "explanation": "The infinitive structure 'to [verb]' requires the base verb 'mitigate', which collocates naturally with 'risks'. 'Mitigate' means to make something less severe or harsh. The noun 'mitigation' cannot function as the verb in an infinitive clause.",
+      "words": [
+        "mitigate"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Reading & Writing: Fill in the Blanks",
+      "label": "Reading & Writing: Fill in the Blanks",
+      "prompt": "The central bank decided to raise interest rates in order to ____ consumer confidence and stabilize the fluctuating national currency.",
+      "options": [
+        "bolster",
+        "bolstered",
+        "bolstering",
+        "bolsterer"
+      ],
+      "correctIndex": 0,
+      "explanation": "The phrase 'in order to' takes a base verb to express purpose. 'Bolster' collocates strongly with abstract nouns like 'confidence' and means to support or strengthen. The past tense 'bolstered' is ungrammatical following 'in order to'.",
+      "words": [
+        "bolster"
       ]
     }
   ]

@@ -1,97 +1,194 @@
 {
   "examId": "gmat",
   "examTitle": "Sunday GMAT Quiz",
-  "subtitle": "5 questions in real GMAT format. A new quiz on this week's words goes live every Sunday.",
-  "timePerQuestionSeconds": 45,
+  "subtitle": "10 questions on this week's words, in real GMAT format. Older words from 3–4 weeks ago come back too.",
+  "timePerQuestionSeconds": 120,
   "passingScorePercentage": 70,
   "instructions": [
-    "You have 45 seconds per question; the quiz moves on when time runs out.",
+    "You have 120 seconds per question; the quiz moves on when time runs out.",
     "Your score appears the moment you finish."
   ],
+  "week": "2026-11-15",
   "questions": [
     {
       "id": 1,
-      "type": "Critical Reasoning - Assumption",
-      "prompt": "The venture capital board dismissed the founder's valuation model as ________, pointing out that it relied on an unproven hypothesis that user acquisition costs would decline to zero within six months.",
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "To mitigate the severe urban traffic congestion during peak hours in Bengaluru, the local municipal corporation proposed a heavy congestion tax on private automobiles entering the central business district. City officials argue that this fee will incentivize commuters to shift to public transit, thereby reducing commuting times significantly. However, critics point out that the current public bus and metro networks are already operating above maximum capacity during peak hours.\n\nWhich of the following, if true, most seriously weakens the city officials' argument?",
       "options": [
-        "pragmatic",
-        "fallacious",
-        "lucid",
-        "ubiquitous",
-        "esoteric"
+        "The congestion tax revenue will be allocated exclusively to road maintenance rather than expanding transit infrastructure.",
+        "Private automobile owners in Bengaluru generally have higher disposable incomes than average citizens.",
+        "Suburban commuters often prefer driving because it offers greater personal privacy.",
+        "Several neighboring cities have successfully implemented similar congestion charges.",
+        "The price of fuel in the region is expected to rise sharply over the next quarter."
       ],
-      "correctIndex": 1,
-      "explanation": "'Fallacious' means based on a mistaken belief or unsound reasoning. Since the model relied on an unproven and implausible hypothesis, describing it as 'fallacious' correctly captures the logical vulnerability in the argument.",
-      "label": "Critical Reasoning - Assumption",
+      "correctIndex": 0,
+      "explanation": "The officials argue that the tax will reduce congestion by shifting drivers to public transit. If the tax revenue is not used to expand transit infrastructure, the already over-capacity transit system cannot absorb the new riders, preventing the intended shift and weakening the argument. Option B is a weaker trap because high income might mean they just pay the tax, but Option A directly undermines the mechanism required to resolve the capacity constraint mentioned in the passage.",
       "words": [
-        "fallacious"
+        "mitigate"
       ]
     },
     {
       "id": 2,
-      "type": "Critical Reasoning - Inference",
-      "prompt": "The legal counsel argued that the supplier had given ________ approval to the contract modifications, as they had accepted payments under the new tariff schedule without objection for three consecutive quarters.",
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "A prominent Indian IT services firm recently introduced an automated code-review tool designed to alleviate the workload of software engineers. Management claimed that by filtering out minor syntax errors automatically, engineers would be able to deliver software projects much faster. However, after six months of implementation, the average project completion time remained unchanged.\n\nWhich of the following, if true, best explains the apparent discrepancy described above?",
       "options": [
-        "tacit",
-        "ephemeral",
-        "quixotic",
-        "anachronistic",
-        "esoteric"
+        "The automated tool required engineers to spend extra time manually reviewing and correcting its frequent false positives.",
+        "Engineers welcomed the reduction in repetitive manual tasks provided by the software.",
+        "The cost of acquiring the automated code-review tool was higher than initial budget estimates.",
+        "Many junior developers had not received formal training on syntax optimization prior to the tool's rollout.",
+        "The company expanded its client base significantly during the six-month evaluation period."
       ],
       "correctIndex": 0,
-      "explanation": "'Tacit' means understood or implied without being stated directly. Accepting modified terms and payments over three quarters without protest represents implied or tacit agreement.",
-      "label": "Critical Reasoning - Inference"
+      "explanation": "To explain why project completion time did not drop despite the tool designed to alleviate workload, there must be a offsetting factor. Option A shows that the time saved was offset by the need to fix false positives generated by the tool. Option B and C are irrelevant to the time discrepancy.",
+      "words": [
+        "alleviate"
+      ]
     },
     {
       "id": 3,
-      "type": "Reading Comprehension - Tone",
-      "prompt": "Rather than relying on abstract corporate dogma, the interim chief executive adopted a resolutely ________ approach, restructuring division budgets based solely on verifiable operating margins.",
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "Data from an e-commerce platform operating in tier-2 cities across India revealed a striking anomaly last quarter: despite an overall economic slowdown, sales of premium electronics spiked by 40%. The marketing director concluded that consumers in these cities were increasingly unconcerned with economic downturns and were permanently shifting toward luxury purchases.\n\nWhich of the following, if true, most undermines the marketing director's conclusion?",
       "options": [
-        "anachronistic",
-        "pragmatic",
-        "quixotic",
-        "dogmatic",
-        "transitory"
+        "The spike was driven entirely by a one-time deep discount festival sponsored by major brand manufacturers.",
+        "Tier-2 city consumers historically spent less on premium electronics than consumers in tier-1 metro areas.",
+        "Logistical delays in delivery were reduced during the same financial quarter.",
+        "Competitor e-commerce platforms reported stable sales of lower-priced home appliances.",
+        "Local banking institutions increased credit card issuance rates earlier that year."
       ],
-      "correctIndex": 1,
-      "explanation": "'Pragmatic' means dealing with situations realistically and practically based on real-world outcomes rather than theoretical dogma, which directly matches basing decisions on 'verifiable operating margins'.",
-      "label": "Reading Comprehension - Tone",
+      "correctIndex": 0,
+      "explanation": "The director attributes the anomaly to a permanent shift in consumer mindset. Option A provides an alternative, temporary explanation (a one-time promotional festival), showing that the behavior is not evidence of a permanent shift. Option B is a background contrast trap that does not explain the recent spike.",
       "words": [
-        "pragmatic"
+        "anomaly"
       ]
     },
     {
       "id": 4,
-      "type": "Critical Reasoning - Strengthen/Weaken",
-      "prompt": "To ________ their claim that regional consumer confidence had rebounded, market analysts presented third-quarter retail data demonstrating an 18% increase in discretionary household spending.",
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "During corporate negotiations, the chief executive officer failed to articulate a clear strategic rationale for acquiring a rival logistics provider. Consequently, major institutional shareholders expressed deep skepticism regarding the integration plan and threatened to vote against the merger. The board of directors maintains that shareholder panic is entirely ungrounded because the financial synergies were clearly detailed in written regulatory filings.\n\nWhich of the following is an assumption required by the board's argument?",
       "options": [
-        "substantiate",
-        "obfuscate",
-        "repudiate",
-        "undermine",
-        "attenuate"
+        "Shareholders base their approval of corporate mergers primarily on written financial disclosures rather than verbal management presentations.",
+        "The acquired logistics provider has no outstanding debt obligations that could impair future earnings.",
+        "Verbal explanations by CEOs are always less accurate than standardized regulatory filings.",
+        "Institutional shareholders had previously approved similar acquisition deals presented by this executive team.",
+        "The logistics sector is currently undergoing a period of rapid consolidation across emerging markets."
       ],
       "correctIndex": 0,
-      "explanation": "'Substantiate' means to provide evidence to support or prove the truth of a claim. Discretionary spending data was used to substantiate (support) the analysts' thesis.",
-      "label": "Critical Reasoning - Strengthen/Weaken",
+      "explanation": "The board argues that panic is ungrounded *because* details were in written filings, even though the CEO failed to verbally articulate them. This assumes that written filings are sufficient for shareholders to judge the deal and should outweigh the lack of verbal articulation. Option C uses an extreme word ('always') that is not necessary for the argument to hold.",
       "words": [
-        "substantiate"
+        "articulate"
       ]
     },
     {
       "id": 5,
-      "type": "Critical Reasoning - Flaw in Argument",
-      "prompt": "The auditor noted that the executive's statements were deliberately ________, using evasive language that could be interpreted either as a denial of wrongdoing or as an admission of regulatory negligence.",
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "A fintech startup observed that a highly idiosyncratic risk model, which utilized non-traditional data such as social media activity, outperformed standard credit-scoring systems in predicting loan defaults among first-time borrowers. The lead analyst concluded that traditional credit metrics like income proof and bank statements should be entirely replaced by this new model for all future loan applicants.\n\nWhich of the following, if true, highlights a flaw in the lead analyst's recommendation?",
       "options": [
-        "lucid",
-        "pellucid",
-        "equivocal",
-        "pragmatic",
-        "ubiquitous"
+        "It assumes that a model tailored to first-time borrowers without credit histories will be equally reliable for established commercial borrowers.",
+        "It ignores the fact that traditional credit scores are required by central banking regulations in many jurisdictions.",
+        "It fails to consider that social media platforms frequently update their privacy protocols.",
+        "It overestimates the cost savings associated with processing automated digital data.",
+        "It relies on evidence gathered over a period of economic expansion rather than recession."
       ],
-      "correctIndex": 2,
-      "explanation": "'Equivocal' means open to more than one interpretation or deliberately ambiguous, matching the auditor's observation of language that could be read in two contradictory ways.",
-      "label": "Critical Reasoning - Flaw in Argument"
+      "correctIndex": 0,
+      "explanation": "The analyst generalizes a result from a specific, unusual group (first-time borrowers, where an idiosyncratic model works) to *all* future applicants. Pointing out that established borrowers differ flaws this sweeping recommendation. Option B is a real-world constraint trap, but Option A addresses the logical flaw of overgeneralization from a specific sample.",
+      "words": [
+        "idiosyncratic"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "The human resources department at a multinational consulting firm noted that exit rates were highest among consultants assigned to repetitive, mundane audit compliance tasks. To boost employee retention, the firm decided to automate these routine tasks using artificial intelligence, assuming this would make job roles significantly more engaging. However, after the implementation, overall employee turnover remained virtually unchanged.\n\nWhich of the following, if true, best explains this outcome?",
+      "options": [
+        "The elimination of routine tasks forced consultants to handle exclusively high-stress, complex client disputes without additional support.",
+        "The software used to automate the compliance tasks required periodic updates by third-party vendors.",
+        "Consultants had previously expressed satisfaction with the firm's competitive compensation packages.",
+        "Other consulting firms in the region were offering higher signing bonuses to experienced professionals.",
+        "The AI implementation process took three months longer than initially projected by the technology department."
+      ],
+      "correctIndex": 0,
+      "explanation": "Replacing mundane work was expected to increase engagement and reduce turnover. Option A reveals a negative unintended consequence—increasing high-stress work—which neutralizes the expected retention benefit. Option D introduces an outside factor, but Option A directly explains why the specific intervention failed to improve overall job satisfaction.",
+      "words": [
+        "mundane"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "When a pharmaceutical company announced that an agricultural community faced severe soil contamination from factory runoff, management attempted to placate local residents by offering free health checkups and building a community park. Community leaders rejected the gesture, claiming that these actions failed to address the core problem. Management argued that their response demonstrated adequate corporate responsibility.\n\nWhich of the following statements best describes the flaw in management's position?",
+      "options": [
+        "It offers superficial concessions while ignoring the primary source of harm and its long-term remediation.",
+        "It relies on expert scientific testimony that has not been independently verified by public health authorities.",
+        "It assumes that community residents are capable of assessing medical diagnostic results accurately.",
+        "It treats a temporary economic downturn as a permanent structural shift in local agriculture.",
+        "It confuses the cause of environmental pollution with its social consequences."
+      ],
+      "correctIndex": 0,
+      "explanation": "Management tried to placate residents with unrelated perks (checkups, parks) rather than fixing the soil contamination itself. Option A correctly identifies this flaw in logic. Option E is a abstract-sounding trap that mischaracterizes the nature of the mismatch.",
+      "words": [
+        "placate"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "Researchers studying workplace dynamics observed that remote work policies had a profound impact on employee burnout levels, reducing reported stress by over 35% across diverse corporate departments. Based on these findings, the research team inferred that implementing remote work options will universally enhance employee productivity across all industry sectors.\n\nWhich of the following reveals a gap in the researchers' reasoning?",
+      "options": [
+        "It equates a reduction in reported psychological stress directly with an increase in overall work productivity.",
+        "It fails to account for the initial setup costs of providing home office hardware to employees.",
+        "It assumes that remote communication technology will remain uninterrupted during peak working hours.",
+        "It ignores the preference of senior executives to maintain traditional in-office oversight mechanisms.",
+        "It overlooks differences in internet bandwidth availability between metro cities and rural areas."
+      ],
+      "correctIndex": 0,
+      "explanation": "The premises show a profound effect on *stress/burnout reduction*, but the conclusion makes a leap to *productivity enhancement*. Option A points out this false equivalence. Options B, C, and E represent practical considerations but do not address the logical jump in the argument.",
+      "words": [
+        "profound"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "A venture capital group recently rejected a funding request from an early-stage startup, claiming that the founders held naive expectations regarding customer acquisition costs in the highly competitive quick-commerce sector. The founders countered that their projected growth was realistic because their pilot project in a small, affluent neighborhood yielded low acquisition costs.\n\nWhich of the following, if true, most strongly supports the venture capital group's assessment?",
+      "options": [
+        "Customer acquisition costs in affluent test markets are unnaturally low and do not reflect the heavy promotional spending required to expand into price-sensitive broader markets.",
+        "Quick-commerce applications typically experience high customer churn rates during their first year of operation.",
+        "The founders had prior experience running successful traditional retail businesses in major metropolitan centers.",
+        "Venture capital firms in the region have recently tightened investment criteria across all technology sectors.",
+        "Competing quick-commerce startups have recently raised large funding rounds from international investors."
+      ],
+      "correctIndex": 0,
+      "explanation": "The VC group considers the founders naive for relying on a small, atypical pilot market. Option A supports the VC group by demonstrating why pilot results from affluent areas fail to generalize to broader market realities. Option B discusses churn, which is related but less directly addresses the acquisition cost metric in dispute.",
+      "words": [
+        "naive"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Critical Reasoning",
+      "label": "Critical Reasoning",
+      "prompt": "To bolster investor confidence following a sudden quarterly revenue dip, the chief financial officer of a renewable energy firm highlighted that backlog orders had increased by 50%. The CFO asserted that this surge in future orders guarantees financial recovery in the subsequent quarter. However, industry analysts remain skeptical of this guarantee.\n\nWhich of the following, if true, provides the strongest reason for the analysts' skepticism?",
+      "options": [
+        "Clients who placed backlog orders retain the contractual right to cancel them without penalty prior to delivery.",
+        "The company's primary manufacturing facility operates using solar energy.",
+        "Quarterly revenue dips are common among competitors operating within the same region.",
+        "The CFO joined the renewable energy firm within the past twelve months.",
+        "The cost of raw materials for wind turbine assembly declined slightly last quarter."
+      ],
+      "correctIndex": 0,
+      "explanation": "The CFO relies on backlog orders to bolster confidence and guarantee revenue. If clients can cancel orders at any time without penalty (Option A), backlog orders do not guarantee actual future revenue, validating the analysts' skepticism. Option C shows industry context but doesn't undermine the CFO's claim about orders turning into revenue.",
+      "words": [
+        "bolster"
+      ]
     }
   ]
 }
