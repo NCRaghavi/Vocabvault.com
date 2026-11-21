@@ -8,196 +8,196 @@
     "You have 60 seconds per question; the quiz moves on when time runs out.",
     "Your score appears the moment you finish."
   ],
-  "week": "2026-11-15",
+  "week": "2026-11-22",
   "questions": [
     {
       "id": 1,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "Despite the tech company's aggressive PR campaign promising revolutionary AI integration, the actual software update offered only ____ improvements to daily workflow, disappointing seasoned developers.",
+      "prompt": "Despite the department's longstanding policy against unsanctioned fieldwork, the senior researcher chose to ____ in the junior faculty's unconventional expedition, tacitly approving the endeavor without formally signing off on it.",
       "options": [
-        "mundane",
-        "profound",
-        "idiosyncratic",
-        "unprecedented",
-        "radical"
+        "acquiesce",
+        "meddle",
+        "proselytize",
+        "equivocate",
+        "demur"
       ],
       "correctIndex": 0,
-      "explanation": "The clue 'despite... revolutionary AI integration' and 'disappointing seasoned developers' indicates that the improvements were unimpressive and ordinary. 'Mundane' means lacking interest or excitement, fitting the context of routine, minor updates. A common trap is 'profound', which represents the opposite of what the contrasting transition implies.",
+      "explanation": "The context clue 'tacitly approving the endeavor without formally signing off' signals an unspoken agreement or reluctant submission, making 'acquiesce' the exact fit. 'Demur' is an antonym trap meaning to raise objections. 'Equivocate' implies speaking evasively rather than allowing the action to proceed.",
       "words": [
-        "mundane"
+        "acquiesce"
       ]
     },
     {
       "id": 2,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "The lead researcher was able to ____ the complex mathematical proofs so clearly that even undergraduate students could grasp the underlying theoretical framework.",
+      "prompt": "The econometrician's monograph on liquidity cascades was so thoroughly ____ that even seasoned central bankers struggled to parse its denser mathematical proofs.",
       "options": [
-        "obfuscate",
-        "articulate",
-        "mitigate",
-        "bolster",
-        "placate"
+        "abstruse",
+        "pellucid",
+        "derivative",
+        "salubrious",
+        "tendentious"
       ],
-      "correctIndex": 1,
-      "explanation": "The clue 'so clearly that even undergraduate students could grasp' points to expressing ideas fluently and coherently. 'Articulate' means to express an idea or feeling fluently and clearly. The trap 'bolster' means to support, but supporting a proof does not inherently mean explaining it clearly.",
+      "correctIndex": 0,
+      "explanation": "The clue that seasoned experts 'struggled to parse its denser mathematical proofs' calls for a word denoting obscurity or extreme difficulty to comprehend, which perfectly defines 'abstruse'. 'Pellucid' is a direct antonym trap meaning crystal clear. 'Derivative' fails because the issue is incomprehensibility, not lack of originality.",
       "words": [
-        "articulate"
+        "abstruse"
       ]
     },
     {
       "id": 3,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "In an effort to ____ the angry shareholders following the unexpected quarterly loss, the board of directors proposed an immediate share buyback program.",
+      "prompt": "When presented with an unexpected grant to establish a high-performance computing lab, the institute's faculty responded with ____, drafting the operational blue-prints in a matter of days.",
       "options": [
-        "placate",
-        "articulate",
-        "exacerbate",
-        "repudiate",
-        "instigate"
+        "torpor",
+        "alacrity",
+        "diffidence",
+        "circumspection",
+        "petulance"
       ],
-      "correctIndex": 0,
-      "explanation": "The context describes dealing with 'angry shareholders' by offering a financial concession to calm them down. 'Placate' means to make someone less angry or hostile. The trap 'exacerbate' means to make a problem worse, which contradicts the board's intent.",
+      "correctIndex": 1,
+      "explanation": "The fact that the faculty drafted complex blueprints 'in a matter of days' indicates brisk and cheerful readiness, matching 'alacrity'. 'Torpor' and 'diffidence' are antonymous traps suggesting lethargy or timidity. 'Circumspection' incorrectly implies caution rather than swift, eager action.",
       "words": [
-        "placate"
+        "alacrity"
       ]
     },
     {
       "id": 4,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "The discovery of liquid water under the Martian surface was considered an absolute ____ by astronomers, as existing thermal models predicted the region should be entirely frozen.",
+      "prompt": "Known for his strict adherence to an almost ____ routine, the distinguished mathematics professor resided in a sparsely furnished room and ate the simplest fare, entirely indifferent to worldly luxury.",
       "options": [
-        "anomaly",
-        "norm",
-        "platitude",
-        "paradigm",
-        "analogy"
+        "sybaritic",
+        "ascetic",
+        "mercurial",
+        "epicurean",
+        "profligate"
       ],
-      "correctIndex": 0,
-      "explanation": "The sentence highlights a clash between expectations ('models predicted... entirely frozen') and reality ('discovery of liquid water'). An 'anomaly' is something that deviates from what is standard, normal, or expected. The trap 'paradigm' refers to a typical example or pattern, which is the opposite of an unexpected deviation.",
+      "correctIndex": 1,
+      "explanation": "Living in a 'sparsely furnished room' and showing indifference to luxury points directly to self-denial and austere living, defining 'ascetic'. 'Sybaritic' and 'epicurean' are precise opposite traps meaning devoted to pleasure and luxury. 'Mercurial' refers to volatile temperament, which is unsupported by the context.",
       "words": [
-        "anomaly"
+        "ascetic"
       ]
     },
     {
       "id": 5,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "While the new monetary policy did little to reverse inflation, economic analysts noted that it helped to ____ the immediate impact of the supply chain crisis on small businesses.",
+      "prompt": "Faced with definitive forensic proof that contradicted his initial claims, the diplomat had no choice but to publicly ____ his previous statements regarding the treaty violation.",
       "options": [
-        "alleviate",
-        "magnify",
-        "bolster",
-        "manifest",
-        "prolong"
+        "promulgate",
+        "repudiate",
+        "corroborate",
+        "dissemble",
+        "substantiate"
       ],
-      "correctIndex": 0,
-      "explanation": "The sentence sets up a partial success where the policy reduced the negative effects ('impact') of a crisis. 'Alleviate' means to make suffering or a problem less severe. The trap 'bolster' means to strengthen, but one does not strengthen a negative impact.",
+      "correctIndex": 1,
+      "explanation": "Because 'definitive forensic proof contradicted' the earlier claims, the diplomat is forced to reject or renounce them, making 'repudiate' the right choice. 'Corroborate' and 'substantiate' are trap opposites meaning to confirm or support. 'Dissemble' means to conceal one's true motives, which does not fit the forced public retraction.",
       "words": [
-        "alleviate"
+        "repudiate"
       ]
     },
     {
       "id": 6,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "The philosopher’s latest treatise was lauded for its ____ insights into human consciousness, offering a depth of analysis rarely seen in contemporary literature.",
+      "prompt": "Although urban planners envisioned a comprehensive municipal transit network, the published roadmap remained frustratingly ____, lacking specific funding sources, stations, or construction timelines.",
       "options": [
-        "profound",
-        "superficial",
-        "naive",
-        "mundane",
-        "transitory"
+        "lucid",
+        "nebulous",
+        "exacting",
+        "definitive",
+        "stringent"
       ],
-      "correctIndex": 0,
-      "explanation": "The clues 'lauded' and 'depth of analysis rarely seen' call for a word meaning deep, insightful, or far-reaching. 'Profound' means having or showing great knowledge or insight. The trap 'superficial' is an antonym.",
+      "correctIndex": 1,
+      "explanation": "The clue 'lacking specific funding sources, stations, or construction timelines' demonstrates that the plan is vague, hazy, and ill-defined, matching 'nebulous'. 'Lucid' and 'definitive' represent antonym traps describing clarity and finality. 'Stringent' suggests strictness, which is irrelevant to vagueness.",
       "words": [
-        "profound"
+        "nebulous"
       ]
     },
     {
       "id": 7,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "The startup founder's ____ belief that potential competitors would voluntarily refrain from copying her unpatented software cost her company its market lead.",
+      "prompt": "The internal audit revealed a(n) ____ oversight in the financial statements: an entire foreign subsidiary's multimillion-dollar operating losses had been omitted from the consolidated balance sheet.",
       "options": [
-        "naive",
-        "astute",
-        "shrewd",
-        "idiosyncratic",
-        "pragmatic"
+        "inconsequential",
+        "egregious",
+        "trifling",
+        "fortuitous",
+        "fastidious"
       ],
-      "correctIndex": 0,
-      "explanation": "Believing competitors will voluntarily play fair without patent protection shows a lack of wisdom or worldly experience. 'Naive' means showing a lack of experience, wisdom, or judgment. Traps like 'astute' or 'shrewd' imply keen judgment, which directly contradicts the costly mistake.",
+      "correctIndex": 1,
+      "explanation": "Omitting an entire subsidiary's multimillion-dollar losses is an extraordinarily flagrant and shocking blunder, perfectly captured by 'egregious'. 'Inconsequential' and 'trifling' serve as direct antonym traps that downplay the severity. 'Fastidious' implies meticulous care, the exact opposite of such a catastrophic omission.",
       "words": [
-        "naive"
+        "egregious"
       ]
     },
     {
       "id": 8,
       "type": "Text Completion",
       "label": "Text Completion",
-      "prompt": "Although the CEO’s management style was undeniably ____—he insisted on drafting all press releases by hand—his eccentric habits did not hinder the firm's overall profitability.",
+      "prompt": "Because the regulatory committee conducted merely a ____ inspection of the civil infrastructure, they failed to spot the structural fractures that led to the bridge's sudden failure months later.",
       "options": [
-        "idiosyncratic",
-        "orthodox",
-        "ubiquitous",
-        "conventional",
-        "deleterious"
+        "punctilious",
+        "cursory",
+        "scrupulous",
+        "trenchant",
+        "pedantic"
       ],
-      "correctIndex": 0,
-      "explanation": "The text explicitly defines the style using 'eccentric habits' and 'insisted on drafting all press releases by hand.' 'Idiosyncratic' means peculiar or individualistic. Traps like 'orthodox' or 'conventional' mean normal/standard, which are opposite in meaning.",
+      "correctIndex": 1,
+      "explanation": "Failing to spot visible structural flaws implies the inspection was hasty, perfunctory, and superficial, which is the definition of 'cursory'. 'Punctilious' and 'scrupulous' form a tempting trap pair denoting thoroughness and attention to detail. 'Trenchant' means incisive or sharp, which does not apply to a physical safety inspection.",
       "words": [
-        "idiosyncratic"
+        "cursory"
       ]
     },
     {
       "id": 9,
       "type": "Sentence Equivalence",
       "label": "Sentence Equivalence",
-      "prompt": "To ____ public panic following the rumor of a banking collapse, the central bank issued a statement guaranteeing all consumer deposits.",
+      "prompt": "The startup's board members were stunned by the founder's ____ decision to risk the firm’s entire treasury on an unproven algorithmic trading strategy.",
       "options": [
-        "mitigate",
-        "allay",
-        "instigate",
-        "bolster",
-        "buttress",
-        "exacerbate"
+        "audacious",
+        "circumspect",
+        "prudent",
+        "daring",
+        "placid",
+        "soporific"
       ],
       "correctIndex": 0,
       "correctIndices": [
         0,
-        1
+        3
       ],
-      "explanation": "The blank requires a word that means to diminish or calm public fear/panic. Both 'mitigate' and 'allay' mean to lessen or alleviate severe feelings or problems. The trap pair 'bolster' and 'buttress' both mean to support/strengthen, but strengthening panic is the opposite of the bank's intent.",
+      "explanation": "Risking the entire corporate treasury on an unproven strategy indicates extreme boldness and recklessness, for which 'audacious' and 'daring' provide identical meaning. 'Circumspect' and 'prudent' form a synonym pair that means cautious, representing the exact opposite of the founder's behavior. 'Placid' and 'soporific' relate to calmness or sleepiness, which do not fit.",
       "words": [
-        "mitigate"
+        "audacious"
       ]
     },
     {
       "id": 10,
       "type": "Sentence Equivalence",
       "label": "Sentence Equivalence",
-      "prompt": "The defense attorney presented newly discovered DNA evidence to ____ her client’s alibi, convincing the jury of his innocence.",
+      "prompt": "Following intense domestic backlash and legal challenges in the apex court, the administration was compelled to ____ the contentious export levy before it took effect.",
       "options": [
-        "bolster",
-        "buttress",
-        "undermine",
-        "subvert",
-        "alleviate",
-        "mitigate"
-      ],
-      "correctIndex": 0,
-      "correctIndices": [
-        0,
-        1
-      ],
-      "explanation": "The evidence is used to strengthen the alibi to convince the jury. Both 'bolster' and 'buttress' mean to support or strengthen. The tempting trap pair 'alleviate' and 'mitigate' share a meaning (to reduce severity), but one does not 'alleviate an alibi'.",
-      "words": [
+        "promulgate",
+        "rescind",
+        "repeal",
+        "enact",
+        "disseminate",
         "bolster"
+      ],
+      "correctIndex": 1,
+      "correctIndices": [
+        1,
+        2
+      ],
+      "explanation": "Because of severe backlash and judicial intervention, the government was forced to cancel or officially revoke the measure, making 'rescind' and 'repeal' the correct equivalent pair. 'Promulgate' and 'enact' form a tempting pair meaning to issue or put into law, but they contradict the concession implied by 'compelled'. 'Bolster' incorrectly suggests strengthening the tax.",
+      "words": [
+        "rescind"
       ]
     }
   ]
