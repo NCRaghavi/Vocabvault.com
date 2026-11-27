@@ -680,8 +680,60 @@ function morningTelegram() {
     const pass = activeProducts_().find(p => p.type === 'pass');
     if (dow_() === 3 && pass) { telegram_('sendMessage', { chat_id: chat, text: `${pass.product_name}: every Sunday's quiz with full explanations, bonus questions and a printable revision PDF for your exam. ₹${pass.price_inr}. ${pass.pay_url}` }); sent.push('pass promo'); }
     props_().setProperty('TG_LAST', today);
+    try { const n = deliverWhatsAppDrafts_(buildWhatsAppDrafts_(today)); if (n) sent.push(n + ' WhatsApp draft(s) to you'); }
+    catch (err) { log_('whatsappDrafts', 'WARN', err.message); }
     return sent.length ? 'Posted: ' + sent.join(', ') : 'Nothing to post.';
   });
+}
+
+// ============================== 5b. WHATSAPP CHANNEL DRAFTS (copy-paste, no API) ==============================
+/** Ready-to-paste WhatsApp posts for a date (WhatsApp formatting: *bold*, _italic_). One string per post. */
+function buildWhatsAppDrafts_(date) {
+  const site = site_(), drafts = [];
+  const featured = readRows_(CONFIG.SHEETS.WORDS).filter(r => fmtDate_(r.featured_date) === date && r.status === 'PUBLISHED');
+  if (featured.length) {
+    drafts.push(`📚 *Today's ${featured.length} words* — VerbalVaultPrep\n\n` + featured.map((w, i) =>
+      `${i + 1}. *${cap_(w.word)}* _(${w.pos})_\n${w.definition}\n💡 ${w.mnemonic}` + (site ? `\n👉 ${site}/words/${w.slug}` : '')).join('\n\n') +
+      (site ? `\n\n🔎 All words: ${site}/words` : ''));
+    const q = featured.find(w => safeJson_(w.mini_q_options, []).length === 4);
+    if (q) drafts.push(`🧠 *Quick check*\n\n${q.mini_q_prompt}\n\n` + safeJson_(q.mini_q_options, []).map((o, i) => `${'ABCD'[i]}) ${o}`).join('\n') +
+      `\n\nThink first, then check the answer` + (site ? `: ${site}/words/${q.slug}` : ' tomorrow.'));
+  }
+  const post = readRows_(CONFIG.SHEETS.POSTS).find(p => fmtDate_(p.post_date) === date && p.status === 'PUBLISHED');
+  if (post && site) drafts.push(`📘 *${post.exam} focus: ${post.title}*\n${post.description || ''}\n\n👉 ${site}/spotlights/${date}-${post.exam.toLowerCase()}-${post.slug}`);
+  if (dow_() === 7 && site) drafts.push(`🧠 *Sunday quiz day!* This week's words in your exam's real format:\n\n` + CONFIG.EXAMS.map(e => `• ${e}: ${site}${CONFIG.CHALLENGE_URL[e]}`).join('\n'));
+  return drafts;
+}
+
+/** Sends the drafts to you privately (your Telegram chat with the bot; email if that isn't linked). Returns how many. */
+function deliverWhatsAppDrafts_(drafts) {
+  if (!drafts.length) return 0;
+  const me = props_().getProperty('OWNER_TELEGRAM_CHAT');
+  if (me) {
+    telegram_('sendMessage', { chat_id: me, text: `📲 WhatsApp channel posts for today (${drafts.length}). Long-press each message below → Copy → paste in your channel.` });
+    drafts.forEach(d => telegram_('sendMessage', { chat_id: me, text: d.slice(0, 4000), disable_web_page_preview: true }));
+  } else {
+    MailApp.sendEmail(prop_('OWNER_EMAIL'), 'WhatsApp channel posts for today', drafts.join('\n\n────────────\n\n'));
+  }
+  return drafts.length;
+}
+
+/** One-time: send /start to your bot in Telegram first, then run this. It remembers your private chat for the WhatsApp drafts. */
+function linkMyTelegram() {
+  const ups = telegram_('getUpdates', { limit: 100 });
+  const msg = ups.map(u => u.message).filter(m => m && m.chat && m.chat.type === 'private').pop();
+  if (!msg) throw new Error('No private message found. Open your bot in Telegram, press Start (or send /start), then run linkMyTelegram again.');
+  props_().setProperty('OWNER_TELEGRAM_CHAT', String(msg.chat.id));
+  telegram_('sendMessage', { chat_id: msg.chat.id, text: '✅ Linked. Every morning at 7 AM I will send you the WhatsApp channel posts here, ready to copy.' });
+  Logger.log('Linked to ' + (msg.chat.first_name || '') + ' (@' + (msg.chat.username || '') + ')');
+}
+
+/** Run by hand any time: sends today's WhatsApp drafts to you now (or the latest day that has featured words). */
+function whatsAppDraftsNow() {
+  let d = today_(), drafts = buildWhatsAppDrafts_(d);
+  for (let back = 1; !drafts.length && back < 4; back++) { d = today_(-back); drafts = buildWhatsAppDrafts_(d); }
+  const n = deliverWhatsAppDrafts_(drafts);
+  Logger.log('Sent ' + n + ' draft(s) for ' + d);
 }
 
 // ============================== 6. SIGNUP + UNSUBSCRIBE (web app) ==============================
