@@ -214,15 +214,18 @@ function generateRun() {
         // Step 1: words drafted in an earlier step but not yet reviewed → review them (2 Gemini calls)
         const drafted = rows.filter(r => r.status === 'DRAFTED');
         if (drafted.length) { const n = reviewDrafted_(drafted.slice(0, 10)); reviewed += drafted.slice(0, 10).length; approved += n; continue; }
-        // Step 2: buffer full → done
-        const target = CONFIG.VAULT_PER_NIGHT + CONFIG.FEATURED_PER_DAY + 15;
-        const buffer = rows.filter(r => r.status === 'APPROVED').length;
-        if (buffer >= target) { if (made || reviewed) msgs.push(`buffer full (${buffer}/${target})`); break; }
+        // Step 2: two separate buffers — featured-queue words (5 a day) and vault words (VAULT_PER_NIGHT a night)
+        const ready = r => r.status === 'APPROVED' && !r.featured_date;
+        const featReady = rows.filter(r => ready(r) && r.want_featured).length;
+        const vaultReady = rows.filter(r => ready(r) && !r.want_featured).length;
+        const featTarget = CONFIG.FEATURED_PER_DAY * 3, vaultTarget = CONFIG.VAULT_PER_NIGHT + 5;
+        const buffer = featReady + vaultReady;
+        if (featReady >= featTarget && vaultReady >= vaultTarget) { if (made || reviewed) msgs.push(`buffers full (featured ${featReady}, vault ${vaultReady})`); break; }
         // Step 3: draft a small batch and SAVE it before anything else (1 Gemini call). Queue rows are removed only after saving.
         const existing = new Set(rows.map(r => String(r.word).toLowerCase()).concat(CONFIG.ALREADY_ON_SITE));
-        const fq = peekQueue_(CONFIG.SHEETS.FEATURED_QUEUE, CONFIG.BATCH_SIZE, existing);
+        const fq = featReady < featTarget ? peekQueue_(CONFIG.SHEETS.FEATURED_QUEUE, CONFIG.BATCH_SIZE, existing) : { words: [], used: 0 };
         fq.words.forEach(w => existing.add(w));
-        const vq = peekQueue_(CONFIG.SHEETS.QUEUE, CONFIG.BATCH_SIZE - fq.words.length, existing);
+        const vq = vaultReady < vaultTarget || !fq.words.length ? peekQueue_(CONFIG.SHEETS.QUEUE, CONFIG.BATCH_SIZE - fq.words.length, existing) : { words: [], used: 0 };
         const picks = fq.words.concat(vq.words);
         if (picks.length < CONFIG.BATCH_SIZE && CONFIG.SUGGEST_WHEN_QUEUE_EMPTY) picks.push.apply(picks, suggestWords_(CONFIG.BATCH_SIZE - picks.length, existing));
         if (!picks.length) { msgs.push(`Word queue is empty (buffer ${buffer}). Add words to ${CONFIG.SHEETS.QUEUE}.`); break; }
@@ -1027,7 +1030,8 @@ function github_(method, path, body) {
   return JSON.parse(res.getContentText());
 }
 function telegram_(method, params) {
-  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + prop_('TELEGRAM_BOT_TOKEN') + '/' + method, { method: 'post', payload: params, muteHttpExceptions: true });
+  const token = String(prop_('TELEGRAM_BOT_TOKEN')).trim().replace(/^bot/i, ''); // tolerate a pasted "bot" prefix or spaces
+  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'post', payload: params, muteHttpExceptions: true });
   const data = JSON.parse(res.getContentText());
   if (!data.ok) throw new Error('Telegram ' + method + ': ' + data.description);
   return data.result;
