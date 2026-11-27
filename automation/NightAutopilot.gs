@@ -1092,3 +1092,13 @@ function fmtDate_(d) {
   if (Object.prototype.toString.call(d) === '[object Date]') return Utilities.formatDate(d, CONFIG.TIMEZONE, 'yyyy-MM-dd');
   return String(d).slice(0, 10);
 }
+
+/** Run by hand after setting up Telegram: checks the bot, posts a test message, logs the channel link. */
+function testTelegram() {
+  const me = telegram_('getMe', {});
+  const chat = telegram_('getChat', { chat_id: prop_('TELEGRAM_CHANNEL') });
+  const m = telegram_('sendMessage', { chat_id: prop_('TELEGRAM_CHANNEL'), text: '✅ VerbalVaultPrep autopilot is connected. Daily words start at 7 AM.' });
+  const out = 'Bot @' + me.username + ' posted message ' + m.message_id + ' to "' + chat.title + '"' + (chat.username ? ' — https://t.me/' + chat.username : ' (private channel)');
+  Logger.log(out);
+  return out;
+}
