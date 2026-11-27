@@ -1083,7 +1083,8 @@ function github_(method, path, body) {
 }
 function telegram_(method, params) {
   const token = String(prop_('TELEGRAM_BOT_TOKEN')).trim().replace(/^bot/i, ''); // tolerate a pasted "bot" prefix or spaces
-  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'post', payload: params, muteHttpExceptions: true });
+  const form = {}; Object.keys(params || {}).forEach(k => { const v = params[k]; if (v !== undefined && v !== null) form[k] = typeof v === 'string' ? v : String(v); }); // Apps Script turns big numbers into 1.0E9
+  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'post', payload: form, muteHttpExceptions: true });
   const data = JSON.parse(res.getContentText());
   if (!data.ok) throw new Error('Telegram ' + method + ': ' + data.description);
   return data.result;
